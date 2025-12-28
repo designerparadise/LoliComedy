@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoliComedy Event Dashboard</title>
+    <style>
+        :root {
+            --primary: #a700ff; /* Фиолетовый LoliLand */
+            --secondary: #ff00bf; /* Розовый акцент */
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --text: #ffffff;
+            --danger: #ff4757;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(167, 0, 255, 0.5);
+        }
+
+        .controls {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid #333;
+        }
+
+        input {
+            flex-grow: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #333;
+            background: #252525;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(167, 0, 255, 0.3);
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: 0.2s;
+            color: white;
+        }
+
+        .btn-add {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+        }
+        .btn-add:hover { filter: brightness(1.2); }
+
+        .scoreboard {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .player-card {
+            background: var(--card-bg);
+            padding: 15px 25px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--primary);
+            animation: slideIn 0.3s ease-out;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .player-card.eliminated {
+            border-left: 5px solid #555;
+            opacity: 0.6;
+            filter: grayscale(0.8);
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .nickname {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .rounds-display {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            font-weight: bold;
+            margin-right: 20px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            padding: 0;
+        }
+
+        .btn-plus { background: #2ecc71; }
+        .btn-minus { background: #f39c12; }
+        .btn-kill { background: var(--danger); font-size: 14px;}
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>LoliComedy Event</h1>
+
+    <!-- Панель добавления -->
+    <div class="controls">
+        <input type="text" id="nicknameInput" placeholder="Никнейм игрока (напр. Steve)">
+        <button class="btn-add" onclick="addPlayer()">Добавить</button>
+    </div>
+
+    <!-- Список игроков -->
+    <div class="scoreboard" id="scoreboard">
+        <!-- Карточки будут появляться здесь -->
+    </div>
+
+    <script>
+        // Хранилище данных
+        let players = [];
+
+        // Получаем элементы
+        const input = document.getElementById('nicknameInput');
+        const board = document.getElementById('scoreboard');
+
+        // Добавление игрока по Enter
+        input.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') addPlayer();
+        });
+
+        function addPlayer() {
+            const name = input.value.trim();
+            if (name === '') return;
+
+            const newPlayer = {
+                id: Date.now(),
+                name: name,
+                rounds: 0,
+                active: true
+            };
+
+            players.push(newPlayer);
+            input.value = '';
+            render();
+        }
+
+        function updateScore(id, change) {
+            const player = players.find(p => p.id === id);
+            if (player && player.active) {
+                player.rounds += change;
+                if (player.rounds < 0) player.rounds = 0;
+                render();
+            }
+        }
+
+        function toggleStatus(id) {
+            const player = players.find(p => p.id === id);
+            if (player) {
+                player.active = !player.active;
+                render();
+            }
+        }
+
+        function render() {
+            board.innerHTML = '';
+
+            // Сортировка: Сначала активные, потом по очкам (от большего к меньшему)
+            players.sort((a, b) => {
+                if (a.active === b.active) {
+                    return b.rounds - a.rounds;
+                }
+                return a.active ? -1 : 1;
+            });
+
+            players.forEach(player => {
+                const div = document.createElement('div');
+                div.className = `player-card ${player.active ? '' : 'eliminated'}`;
+                
+                // Генерируем ссылку на голову скина (используем сервис minotar или mc-heads)
+                const skinUrl = `https://minotar.net/helm/${player.name}/40.png`;
+
+                div.innerHTML = `
+                    <div class="player-info">
+                        <img src="${skinUrl}" class="avatar" onerror="this.src='https://minotar.net/helm/MHF_Steve/40.png'">
+                        <span class="nickname">${player.name}</span>
+                    </div>
+                    <div class="player-info">
+                        <span class="rounds-display">Раундов: ${player.rounds}</span>
+                        <div class="actions">
+                            <button class="btn-action btn-minus" onclick="updateScore(${player.id}, -1)" title="Снять балл">-</button>
+                            <button class="btn-action btn-plus" onclick="updateScore(${player.id}, 1)" title="Добавить балл">+</button>
+                            <button class="btn-action btn-kill" onclick="toggleStatus(${player.id})" title="Выбыл/Вернуть">💀</button>
+                        </div>
+                    </div>
+                `;
+                board.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
