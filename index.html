@@ -2,234 +2,138 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LoliComedy Dashboard</title>
+    <title>Event Leaderboard</title>
     <style>
         :root {
-            --primary: #a700ff;
-            --secondary: #ff00bf;
-            --bg: #121212;
-            --card: #1e1e1e;
-            --text: #ffffff;
-            --red: #ff4757;
-            --green: #2ecc71;
-            --orange: #f39c12;
+            --primary: #a700ff; /* Твой фирменный цвет */
+            --bg: #0f0f13;
+            --card: rgba(255, 255, 255, 0.05);
         }
-
         body {
-            font-family: sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background-color: var(--bg);
-            color: var(--text);
+            color: white;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            min-height: 100vh;
             margin: 0;
+            background-image: radial-gradient(circle at 50% 0%, #3d005e 0%, #0f0f13 60%);
         }
-
         h1 {
+            font-size: 3rem;
             text-transform: uppercase;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
+            letter-spacing: 5px;
+            text-shadow: 0 0 20px var(--primary);
+            margin-top: 40px;
         }
-
-        .input-group {
-            background: var(--card);
-            padding: 15px;
-            border-radius: 12px;
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            width: 90%;
+            max-width: 1200px;
+            padding: 20px;
         }
-
-        input {
-            padding: 10px;
-            border-radius: 6px;
-            border: 2px solid #333;
-            background: #2b2b2b;
-            color: white;
-            outline: none;
-        }
-
-        input:focus { border-color: var(--primary); }
-
-        button {
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            color: white;
-            font-weight: bold;
-        }
-
-        .btn-add { background: var(--primary); }
-        .btn-add:hover { opacity: 0.9; }
-
-        .list {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
         .card {
             background: var(--card);
-            padding: 15px;
-            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            border-left: 4px solid var(--primary);
-            animation: fadeIn 0.3s ease;
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
         }
-
-        .card.out {
-            opacity: 0.5;
-            border-left-color: #555;
-            background: #181818;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
+        .card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        
         .avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            width: 60px; height: 60px;
+            background: linear-gradient(45deg, var(--primary), #ff00cc);
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 20px;
-            text-transform: uppercase;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 30px; font-weight: bold;
+            margin-bottom: 10px;
+            box-shadow: 0 0 15px var(--primary);
         }
-
-        .stats {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        .name { font-size: 1.5rem; font-weight: bold; margin-bottom: 5px; }
+        .rounds { color: #aaa; font-size: 0.9rem; margin-bottom: 15px; }
+        
+        .reward-box {
+            background: rgba(0,0,0,0.3);
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            border-radius: 8px;
         }
+        .reward-title { font-size: 0.8rem; color: #888; text-transform: uppercase; }
+        .reward-val { font-size: 1.1rem; color: #ffd700; font-weight: bold; margin-top: 5px; }
 
-        .score {
-            font-size: 1.4em;
-            font-weight: bold;
-            color: var(--secondary);
-        }
-
-        .btn-circle {
-            width: 32px;
-            height: 32px;
-            padding: 0;
-            border-radius: 50%;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-inc { background: var(--green); }
-        .btn-dec { background: var(--orange); }
-        .btn-out { background: var(--red); font-size: 14px; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        /* Анимация появления */
+        @keyframes popIn { from{opacity:0; transform:scale(0.8);} to{opacity:1; transform:scale(1);} }
+        .card { animation: popIn 0.4s ease-out; }
     </style>
 </head>
 <body>
 
-    <h1>LoliComedy</h1>
-
-    <div class="input-group">
-        <input type="text" id="nameIn" placeholder="Никнейм">
-        <button class="btn-add" onclick="add()">Добавить</button>
+    <h1>Purple Comedy</h1>
+    <div class="grid-container" id="grid">
+        <!-- Карточки появляются тут -->
     </div>
 
-    <div class="list" id="list"></div>
-
     <script>
-        let users = [];
-        const listEl = document.getElementById('list');
-        const inputEl = document.getElementById('nameIn');
-
-        inputEl.addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') add();
-        });
-
-        function add() {
-            const name = inputEl.value.trim();
-            if(!name) return;
-            
-            users.push({
-                id: Date.now(),
-                name: name,
-                score: 0,
-                active: true
-            });
-            
-            inputEl.value = '';
-            render();
-        }
-
-        function changeScore(id, val) {
-            const u = users.find(x => x.id === id);
-            if(u && u.active) {
-                u.score += val;
-                if(u.score < 0) u.score = 0;
-                render();
-            }
-        }
-
-        function toggle(id) {
-            const u = users.find(x => x.id === id);
-            if(u) {
-                u.active = !u.active;
-                render();
-            }
+        function getReward(rounds) {
+            // Настройка наград (можешь поменять текст тут)
+            if (rounds === 0) return "❌ Нет награды";
+            if (rounds === 1) return "🍬 10.000$";
+            if (rounds === 2) return "💰 50.000$";
+            if (rounds === 3) return "🔮 Кейс";
+            if (rounds === 4) return "💎 Редкий лут";
+            if (rounds >= 5) return "👑 ТИТУЛ";
+            return "---";
         }
 
         function render() {
-            listEl.innerHTML = '';
+            // Читаем данные из того же места, куда пишет админка
+            const data = JSON.parse(localStorage.getItem('eventData')) || [];
+            const grid = document.getElementById('grid');
             
-            // Сортировка: Сначала активные, потом по очкам
-            users.sort((a, b) => {
-                if(a.active === b.active) return b.score - a.score;
-                return a.active ? -1 : 1;
-            });
+            // Если данных нет, ничего не делаем
+            if(data.length === 0 && grid.innerHTML === '') {
+                grid.innerHTML = '<div style="color:#555; width:100%; text-align:center;">Ожидание участников...</div>';
+                return;
+            }
 
-            users.forEach(u => {
-                const div = document.createElement('div');
-                div.className = `card ${u.active ? '' : 'out'}`;
-                
-                // Первая буква имени для аватарки
-                const letter = u.name.charAt(0);
+            // Сортировка: Лидеры первыми
+            data.sort((a, b) => b.rounds - a.rounds);
 
-                div.innerHTML = `
-                    <div class="user-info">
-                        <div class="avatar">${letter}</div>
-                        <h3>${u.name}</h3>
+            let html = '';
+            data.forEach(p => {
+                html += `
+                <div class="card">
+                    <div class="avatar">${p.name.charAt(0)}</div>
+                    <div class="name">${p.name}</div>
+                    <div class="rounds">Пройдено раундов: <b style="color:white">${p.rounds}</b></div>
+                    <div class="reward-box">
+                        <div class="reward-title">Текущая награда</div>
+                        <div class="reward-val">${getReward(p.rounds)}</div>
                     </div>
-                    <div class="stats">
-                        <span class="score">Раунды: ${u.score}</span>
-                        <div style="display:flex; gap:5px;">
-                            <button class="btn-circle btn-dec" onclick="changeScore(${u.id}, -1)">-</button>
-                            <button class="btn-circle btn-inc" onclick="changeScore(${u.id}, 1)">+</button>
-                            <button class="btn-circle btn-out" onclick="toggle(${u.id})">✖</button>
-                        </div>
-                    </div>
+                </div>
                 `;
-                listEl.appendChild(div);
             });
+
+            // Обновляем HTML только если что-то изменилось (чтобы не моргало)
+            if (grid.innerHTML !== html) {
+                grid.innerHTML = html;
+            }
         }
+
+        // Обновляем страницу каждые 0.5 секунды
+        setInterval(render, 500);
+        render();
     </script>
 </body>
 </html>
