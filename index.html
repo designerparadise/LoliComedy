@@ -6,7 +6,7 @@
     <style>
         :root {
             --primary: #bd00ff;
-            --accent: #00ffea;
+            --accent: #d966ff; /* Розово-фиолетовый акцент для монет */
             --bg-dark: #07030f;
             --card-bg: rgba(20, 10, 30, 0.75);
             
@@ -47,7 +47,6 @@
         .curtain.left { left: 0; transform-origin: left; border-right: 2px solid rgba(0,0,0,0.5); }
         .curtain.right { right: 0; transform-origin: right; border-left: 2px solid rgba(0,0,0,0.5); background-position: -100px 0; }
 
-        /* ИСПРАВЛЕНИЕ: Открываем шторы сильнее (95%), чтобы не закрывали текст */
         body.open .curtain.left { transform: translateX(-95%); }
         body.open .curtain.right { transform: translateX(95%); }
 
@@ -79,21 +78,21 @@
             text-shadow: 0 0 30px rgba(189, 0, 255, 0.4);
         }
 
-        /* --- ИНФО-ПАНЕЛЬ (ИСПРАВЛЕНО ПОЛОЖЕНИЕ) --- */
+        /* --- ИНФО-ПАНЕЛЬ (Без статуса) --- */
         .info-sidebar {
             position: fixed; 
-            left: 70px; /* Сдвинул правее, было 30px */
+            left: 70px; 
             top: 150px; width: 220px;
             background: rgba(10, 5, 20, 0.6);
             backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1);
             border-radius: 15px; padding: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             transform: translateX(-200%); transition: transform 1s ease 2s;
-            z-index: 100; /* Чтобы была над фоном */
+            z-index: 100;
         }
         body.open .info-sidebar { transform: translateX(0); }
 
-        .info-title { color: var(--accent); font-weight: bold; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
+        .info-title { color: #00ffea; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
         .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; color: #ddd; }
         .info-row b { color: #fff; }
         .info-row.highlight { color: var(--primary); text-shadow: 0 0 10px rgba(189,0,255,0.5); font-weight: bold; }
@@ -104,7 +103,7 @@
             gap: 25px; 
             width: 80%; 
             max-width: 1000px; 
-            margin-left: 150px; /* Сдвиг вправо, чтобы не наезжать на сайдбар */
+            margin-left: 150px;
         }
 
         .card {
@@ -144,10 +143,17 @@
         }
         .dot { width: 6px; height: 6px; background-color: #00ff88; border-radius: 50%; box-shadow: 0 0 6px #00ff88; }
         
+        /* СТИЛЬ НАГРАДЫ (С МЕШКОМ И КАПСОМ) */
         .reward { 
-            font-size: 1rem; color: var(--accent); font-weight: 800; 
-            text-transform: uppercase; letter-spacing: 0.5px;
-            text-shadow: 0 0 15px rgba(0, 255, 234, 0.3);
+            font-size: 1rem; 
+            color: var(--accent); /* Розово-фиолетовый */
+            font-weight: 800; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 10px rgba(217, 102, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -164,18 +170,13 @@
         <div class="loader-text">LoliLand Event</div>
     </div>
 
-    <!-- ОБНОВЛЕННАЯ ПАНЕЛЬ НАГРАД (4 РАУНДА) -->
+    <!-- ИНФО-ПАНЕЛЬ (Без статуса) -->
     <div class="info-sidebar">
         <div class="info-title">💰 Призовой фонд</div>
         <div class="info-row"><span>1 Раунд:</span> <b>10.000</b></div>
         <div class="info-row"><span>2 Раунда:</span> <b>50.000</b></div>
         <div class="info-row"><span>3 Раунда:</span> <b>100.000</b></div>
         <div class="info-row highlight"><span>4 Раунда:</span> <b>500.000</b></div>
-        
-        <div class="info-title" style="margin-top:20px;">ℹ️ Статус</div>
-        <div class="info-row" style="font-size:0.8rem; color:#aaa;">
-            Сортировка: Лидеры выше.<br>Новички — в порядке очереди.
-        </div>
     </div>
 
     <div class="stage-container">
@@ -193,13 +194,13 @@
             }, 2000);
         };
 
-        // ЛОГИКА ДЛЯ 4 РАУНДОВ
+        // ЛОГИКА НАГРАД (С ТЕКСТОМ "МОНЕТ" И МЕШКОМ)
         function getReward(rounds) {
             if (rounds === 0) return "Ожидание";
-            if (rounds === 1) return "10.000 $";
-            if (rounds === 2) return "50.000 $";
-            if (rounds === 3) return "100.000 $";
-            if (rounds >= 4) return "500.000 $"; // Финал
+            if (rounds === 1) return "💰 10.000 МОНЕТ";
+            if (rounds === 2) return "💰 50.000 МОНЕТ";
+            if (rounds === 3) return "💰 100.000 МОНЕТ";
+            if (rounds >= 4) return "💰 500.000 МОНЕТ";
             return "---";
         }
 
@@ -208,7 +209,6 @@
         function render() {
             const data = JSON.parse(localStorage.getItem('eventData')) || [];
             
-            // Сортировка: Баллы -> ID
             data.sort((a, b) => {
                 if (b.rounds !== a.rounds) return b.rounds - a.rounds;
                 return a.id - b.id;
@@ -229,11 +229,10 @@
             
             data.forEach((p, index) => {
                 const isLeader = p.rounds > 0;
-                // Если прошел 4 раунда - особое золотое свечение
                 const isWinner = p.rounds >= 4;
                 
                 let glowColor = 'var(--primary)';
-                if (isWinner) glowColor = '#ffd700'; // Золото
+                if (isWinner) glowColor = '#ffd700';
 
                 const activeGlow = isLeader ? `border-color: ${glowColor}; box-shadow: 0 0 25px ${glowColor};` : '';
                 const dotColor = isLeader ? '#00ffea' : '#555';
