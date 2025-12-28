@@ -6,9 +6,9 @@
     <style>
         :root {
             --primary: #bd00ff;
-            --accent: #00ffea; /* Циан для акцентов (монеты) */
+            --accent: #00ffea;
             --bg-dark: #07030f;
-            --card-bg: rgba(20, 10, 30, 0.65);
+            --card-bg: rgba(20, 10, 30, 0.75);
             
             /* Цвета штор */
             --c-shadow: #140024;
@@ -47,8 +47,9 @@
         .curtain.left { left: 0; transform-origin: left; border-right: 2px solid rgba(0,0,0,0.5); }
         .curtain.right { right: 0; transform-origin: right; border-left: 2px solid rgba(0,0,0,0.5); background-position: -100px 0; }
 
-        body.open .curtain.left { transform: translateX(-90%); }
-        body.open .curtain.right { transform: translateX(90%); }
+        /* ИСПРАВЛЕНИЕ: Открываем шторы сильнее (95%), чтобы не закрывали текст */
+        body.open .curtain.left { transform: translateX(-95%); }
+        body.open .curtain.right { transform: translateX(95%); }
 
         /* --- ЗАГРУЗКА --- */
         #preloader {
@@ -78,14 +79,17 @@
             text-shadow: 0 0 30px rgba(189, 0, 255, 0.4);
         }
 
-        /* --- НОВОЕ: ИНФО-ПАНЕЛЬ СЛЕВА --- */
+        /* --- ИНФО-ПАНЕЛЬ (ИСПРАВЛЕНО ПОЛОЖЕНИЕ) --- */
         .info-sidebar {
-            position: fixed; left: 30px; top: 150px; width: 220px;
+            position: fixed; 
+            left: 70px; /* Сдвинул правее, было 30px */
+            top: 150px; width: 220px;
             background: rgba(10, 5, 20, 0.6);
             backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1);
             border-radius: 15px; padding: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transform: translateX(-150%); transition: transform 1s ease 2s; /* Выезжает позже */
+            transform: translateX(-200%); transition: transform 1s ease 2s;
+            z-index: 100; /* Чтобы была над фоном */
         }
         body.open .info-sidebar { transform: translateX(0); }
 
@@ -97,7 +101,10 @@
         /* --- СЕТКА КАРТОЧЕК --- */
         .grid {
             display: flex; flex-wrap: wrap; justify-content: center;
-            gap: 25px; width: 85%; max-width: 1000px; margin-left: 100px; /* Сдвиг вправо из-за сайдбара */
+            gap: 25px; 
+            width: 80%; 
+            max-width: 1000px; 
+            margin-left: 150px; /* Сдвиг вправо, чтобы не наезжать на сайдбар */
         }
 
         .card {
@@ -114,7 +121,6 @@
             box-shadow: 0 20px 50px rgba(189, 0, 255, 0.2); background: rgba(40, 20, 60, 0.8); z-index: 100;
         }
 
-        /* Номерок очереди */
         .queue-badge {
             position: absolute; top: 10px; left: 10px;
             background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
@@ -158,14 +164,13 @@
         <div class="loader-text">LoliLand Event</div>
     </div>
 
-    <!-- ИНФОРМАЦИЯ О НАГРАДАХ (Слева) -->
+    <!-- ОБНОВЛЕННАЯ ПАНЕЛЬ НАГРАД (4 РАУНДА) -->
     <div class="info-sidebar">
         <div class="info-title">💰 Призовой фонд</div>
         <div class="info-row"><span>1 Раунд:</span> <b>10.000</b></div>
-        <div class="info-row"><span>2 Раунда:</span> <b>25.000</b></div>
-        <div class="info-row"><span>3 Раунда:</span> <b>50.000</b></div>
-        <div class="info-row"><span>4 Раунда:</span> <b>100.000</b></div>
-        <div class="info-row highlight"><span>5 Раундов:</span> <b>500.000</b></div>
+        <div class="info-row"><span>2 Раунда:</span> <b>50.000</b></div>
+        <div class="info-row"><span>3 Раунда:</span> <b>100.000</b></div>
+        <div class="info-row highlight"><span>4 Раунда:</span> <b>500.000</b></div>
         
         <div class="info-title" style="margin-top:20px;">ℹ️ Статус</div>
         <div class="info-row" style="font-size:0.8rem; color:#aaa;">
@@ -188,14 +193,13 @@
             }, 2000);
         };
 
-        // НОВЫЕ НАГРАДЫ (Только монеты)
+        // ЛОГИКА ДЛЯ 4 РАУНДОВ
         function getReward(rounds) {
             if (rounds === 0) return "Ожидание";
             if (rounds === 1) return "10.000 $";
-            if (rounds === 2) return "25.000 $";
-            if (rounds === 3) return "50.000 $";
-            if (rounds === 4) return "100.000 $";
-            if (rounds >= 5) return "500.000 $";
+            if (rounds === 2) return "50.000 $";
+            if (rounds === 3) return "100.000 $";
+            if (rounds >= 4) return "500.000 $"; // Финал
             return "---";
         }
 
@@ -204,15 +208,10 @@
         function render() {
             const data = JSON.parse(localStorage.getItem('eventData')) || [];
             
-            // --- УМНАЯ СОРТИРОВКА (ДЛЯ ОЧЕРЕДИ) ---
-            // Сортируем: 
-            // 1. Сначала по баллам (от большего к меньшему).
-            // 2. Если баллы равны (например 0), то по ID (кто раньше добавлен, тот выше).
+            // Сортировка: Баллы -> ID
             data.sort((a, b) => {
-                if (b.rounds !== a.rounds) {
-                    return b.rounds - a.rounds; // Сначала крутые
-                }
-                return a.id - b.id; // Потом очередь
+                if (b.rounds !== a.rounds) return b.rounds - a.rounds;
+                return a.id - b.id;
             });
 
             const currentDataState = JSON.stringify(data);
@@ -229,13 +228,17 @@
             let html = '';
             
             data.forEach((p, index) => {
-                // Если есть баллы - свечение. Если нет - обычная карточка.
                 const isLeader = p.rounds > 0;
-                const activeGlow = isLeader ? 'border-color: var(--primary); box-shadow: 0 0 25px rgba(189,0,255,0.3);' : '';
+                // Если прошел 4 раунда - особое золотое свечение
+                const isWinner = p.rounds >= 4;
+                
+                let glowColor = 'var(--primary)';
+                if (isWinner) glowColor = '#ffd700'; // Золото
+
+                const activeGlow = isLeader ? `border-color: ${glowColor}; box-shadow: 0 0 25px ${glowColor};` : '';
                 const dotColor = isLeader ? '#00ffea' : '#555';
                 const queueClass = isLeader ? 'leader' : '';
                 
-                // Текст бейджика: Если играл - "TOP", если ждет - Номер в очереди
                 const badgeText = isLeader ? `TOP #${index + 1}` : `Queue #${index + 1}`;
 
                 html += `
