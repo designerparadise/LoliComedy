@@ -3,112 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LoliComedy Event Dashboard</title>
+    <title>LoliComedy Dashboard</title>
     <style>
         :root {
-            --primary: #a700ff; /* Фиолетовый LoliLand */
-            --secondary: #ff00bf; /* Розовый акцент */
+            --primary: #a700ff;
+            --secondary: #ff00bf;
             --bg: #121212;
-            --card-bg: #1e1e1e;
+            --card: #1e1e1e;
             --text: #ffffff;
-            --danger: #ff4757;
+            --red: #ff4757;
+            --green: #2ecc71;
+            --orange: #f39c12;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: sans-serif;
             background-color: var(--bg);
             color: var(--text);
-            margin: 0;
-            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
         }
 
         h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
             text-transform: uppercase;
             background: linear-gradient(45deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(167, 0, 255, 0.5);
+            margin-bottom: 20px;
         }
 
-        .controls {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        .input-group {
+            background: var(--card);
+            padding: 15px;
+            border-radius: 12px;
             display: flex;
             gap: 10px;
             margin-bottom: 30px;
-            width: 100%;
-            max-width: 600px;
-            border: 1px solid #333;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         input {
-            flex-grow: 1;
-            padding: 12px;
-            border-radius: 8px;
+            padding: 10px;
+            border-radius: 6px;
             border: 2px solid #333;
-            background: #252525;
+            background: #2b2b2b;
             color: white;
-            font-size: 16px;
             outline: none;
-            transition: 0.3s;
         }
 
-        input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 10px rgba(167, 0, 255, 0.3);
-        }
+        input:focus { border-color: var(--primary); }
 
         button {
-            padding: 12px 25px;
             border: none;
-            border-radius: 8px;
+            padding: 10px 20px;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-            transition: 0.2s;
             color: white;
+            font-weight: bold;
         }
 
-        .btn-add {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-        }
-        .btn-add:hover { filter: brightness(1.2); }
+        .btn-add { background: var(--primary); }
+        .btn-add:hover { opacity: 0.9; }
 
-        .scoreboard {
+        .list {
             width: 100%;
-            max-width: 800px;
+            max-width: 600px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 10px;
         }
 
-        .player-card {
-            background: var(--card-bg);
-            padding: 15px 25px;
-            border-radius: 12px;
+        .card {
+            background: var(--card);
+            padding: 15px;
+            border-radius: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-left: 5px solid var(--primary);
-            animation: slideIn 0.3s ease-out;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border-left: 4px solid var(--primary);
+            animation: fadeIn 0.3s ease;
         }
 
-        .player-card.eliminated {
-            border-left: 5px solid #555;
-            opacity: 0.6;
-            filter: grayscale(0.8);
+        .card.out {
+            opacity: 0.5;
+            border-left-color: #555;
+            background: #181818;
         }
 
-        .player-info {
+        .user-info {
             display: flex;
             align-items: center;
             gap: 15px;
@@ -117,146 +102,132 @@
         .avatar {
             width: 40px;
             height: 40px;
-            background: #333;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: bold;
             font-size: 20px;
+            text-transform: uppercase;
         }
 
-        .nickname {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .rounds-display {
-            font-size: 1.5rem;
-            color: var(--secondary);
-            font-weight: bold;
-            margin-right: 20px;
-        }
-
-        .actions {
+        .stats {
             display: flex;
-            gap: 10px;
+            align-items: center;
+            gap: 15px;
         }
 
-        .btn-action {
-            width: 35px;
-            height: 35px;
+        .score {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+
+        .btn-circle {
+            width: 32px;
+            height: 32px;
+            padding: 0;
             border-radius: 50%;
+            font-size: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            padding: 0;
         }
 
-        .btn-plus { background: #2ecc71; }
-        .btn-minus { background: #f39c12; }
-        .btn-kill { background: var(--danger); font-size: 14px;}
+        .btn-inc { background: var(--green); }
+        .btn-dec { background: var(--orange); }
+        .btn-out { background: var(--red); font-size: 14px; }
 
-        @keyframes slideIn {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <h1>LoliComedy Event</h1>
+    <h1>LoliComedy</h1>
 
-    <!-- Панель добавления -->
-    <div class="controls">
-        <input type="text" id="nicknameInput" placeholder="Никнейм игрока (напр. Steve)">
-        <button class="btn-add" onclick="addPlayer()">Добавить</button>
+    <div class="input-group">
+        <input type="text" id="nameIn" placeholder="Никнейм">
+        <button class="btn-add" onclick="add()">Добавить</button>
     </div>
 
-    <!-- Список игроков -->
-    <div class="scoreboard" id="scoreboard">
-        <!-- Карточки будут появляться здесь -->
-    </div>
+    <div class="list" id="list"></div>
 
     <script>
-        // Хранилище данных
-        let players = [];
+        let users = [];
+        const listEl = document.getElementById('list');
+        const inputEl = document.getElementById('nameIn');
 
-        // Получаем элементы
-        const input = document.getElementById('nicknameInput');
-        const board = document.getElementById('scoreboard');
-
-        // Добавление игрока по Enter
-        input.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') addPlayer();
+        inputEl.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') add();
         });
 
-        function addPlayer() {
-            const name = input.value.trim();
-            if (name === '') return;
-
-            const newPlayer = {
+        function add() {
+            const name = inputEl.value.trim();
+            if(!name) return;
+            
+            users.push({
                 id: Date.now(),
                 name: name,
-                rounds: 0,
+                score: 0,
                 active: true
-            };
-
-            players.push(newPlayer);
-            input.value = '';
+            });
+            
+            inputEl.value = '';
             render();
         }
 
-        function updateScore(id, change) {
-            const player = players.find(p => p.id === id);
-            if (player && player.active) {
-                player.rounds += change;
-                if (player.rounds < 0) player.rounds = 0;
+        function changeScore(id, val) {
+            const u = users.find(x => x.id === id);
+            if(u && u.active) {
+                u.score += val;
+                if(u.score < 0) u.score = 0;
                 render();
             }
         }
 
-        function toggleStatus(id) {
-            const player = players.find(p => p.id === id);
-            if (player) {
-                player.active = !player.active;
+        function toggle(id) {
+            const u = users.find(x => x.id === id);
+            if(u) {
+                u.active = !u.active;
                 render();
             }
         }
 
         function render() {
-            board.innerHTML = '';
-
-            // Сортировка: Сначала активные, потом по очкам (от большего к меньшему)
-            players.sort((a, b) => {
-                if (a.active === b.active) {
-                    return b.rounds - a.rounds;
-                }
+            listEl.innerHTML = '';
+            
+            // Сортировка: Сначала активные, потом по очкам
+            users.sort((a, b) => {
+                if(a.active === b.active) return b.score - a.score;
                 return a.active ? -1 : 1;
             });
 
-            players.forEach(player => {
+            users.forEach(u => {
                 const div = document.createElement('div');
-                div.className = `player-card ${player.active ? '' : 'eliminated'}`;
+                div.className = `card ${u.active ? '' : 'out'}`;
                 
-                // Генерируем ссылку на голову скина (используем сервис minotar или mc-heads)
-                const skinUrl = `https://minotar.net/helm/${player.name}/40.png`;
+                // Первая буква имени для аватарки
+                const letter = u.name.charAt(0);
 
                 div.innerHTML = `
-                    <div class="player-info">
-                        <img src="${skinUrl}" class="avatar" onerror="this.src='https://minotar.net/helm/MHF_Steve/40.png'">
-                        <span class="nickname">${player.name}</span>
+                    <div class="user-info">
+                        <div class="avatar">${letter}</div>
+                        <h3>${u.name}</h3>
                     </div>
-                    <div class="player-info">
-                        <span class="rounds-display">Раундов: ${player.rounds}</span>
-                        <div class="actions">
-                            <button class="btn-action btn-minus" onclick="updateScore(${player.id}, -1)" title="Снять балл">-</button>
-                            <button class="btn-action btn-plus" onclick="updateScore(${player.id}, 1)" title="Добавить балл">+</button>
-                            <button class="btn-action btn-kill" onclick="toggleStatus(${player.id})" title="Выбыл/Вернуть">💀</button>
+                    <div class="stats">
+                        <span class="score">Раунды: ${u.score}</span>
+                        <div style="display:flex; gap:5px;">
+                            <button class="btn-circle btn-dec" onclick="changeScore(${u.id}, -1)">-</button>
+                            <button class="btn-circle btn-inc" onclick="changeScore(${u.id}, 1)">+</button>
+                            <button class="btn-circle btn-out" onclick="toggle(${u.id})">✖</button>
                         </div>
                     </div>
                 `;
-                board.appendChild(div);
+                listEl.appendChild(div);
             });
         }
     </script>
