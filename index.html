@@ -2,221 +2,243 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>LoliComedy - Live Stage</title>
+    <title>LoliComedy Event</title>
     <style>
         :root {
-            --primary: #a700ff;   /* Неоновый фиолетовый */
-            --gold: #ffcc00;      /* Золото Winline */
-            --dark: #050505;      /* Почти черный фон */
+            /* Фирменная палитра LoliLand */
+            --primary: #bd00ff;       /* Основной неон */
+            --accent: #d966ff;        /* Светло-фиолетовый */
+            --bg-dark: #07030f;       /* Глубокий фон */
+            --card-bg: rgba(20, 10, 30, 0.7);
+            --text-main: #ffffff;
+            --text-gray: #a0a0a0;
         }
 
         body {
             margin: 0;
             padding: 0;
-            background-color: var(--dark);
-            font-family: 'Segoe UI', sans-serif;
-            color: white;
+            background-color: var(--bg-dark);
+            /* Космический градиент на фоне */
+            background-image: radial-gradient(circle at 50% 0%, #2a0045 0%, #07030f 60%);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-main);
             overflow-x: hidden;
             min-height: 100vh;
         }
 
-        /* --- 1. ШТОРКИ (CURTAINS) --- */
-        /* Они закрывают экран сразу при загрузке */
+        /* --- 1. ШТОРКИ (Теперь в стиле темной материи) --- */
         .curtain {
             position: fixed;
             top: 0;
             height: 100vh;
-            width: 50.5%; /* Чуть больше 50%, чтобы не было щели в центре */
-            background: linear-gradient(90deg, #12001f 0%, #2d004d 50%, #12001f 100%);
-            z-index: 2000; /* Очень высокий слой */
-            transition: transform 2s cubic-bezier(0.77, 0, 0.175, 1);
+            width: 51%;
+            background: #05020a;
+            z-index: 2000;
+            transition: transform 1.8s cubic-bezier(0.8, 0, 0.2, 1);
             
-            /* Текстура складок ткани */
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.9);
+            /* Легкий фиолетовый отсвет на краях штор */
+            box-shadow: inset 0 0 80px rgba(189, 0, 255, 0.1);
         }
 
-        .curtain.left { left: 0; transform-origin: left; border-right: 2px solid #000; }
-        .curtain.right { right: 0; transform-origin: right; border-left: 2px solid #000; }
+        .curtain.left { left: 0; transform-origin: left; border-right: 1px solid #222; }
+        .curtain.right { right: 0; transform-origin: right; border-left: 1px solid #222; }
 
-        /* Когда класс .open добавлен, шторки уезжают */
         body.open .curtain.left { transform: translateX(-100%); }
         body.open .curtain.right { transform: translateX(100%); }
 
-        /* --- 2. ЗАГРУЗОЧНОЕ КОЛЬЦО (PRELOADER) --- */
+        /* --- 2. ЗАГРУЗКА (Фиолетовое кольцо) --- */
         #preloader {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%); /* Идеальное центрирование */
-            z-index: 3000; /* Самый верхний слой, над шторками */
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3000;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            pointer-events: none;
             transition: opacity 0.5s ease;
-            pointer-events: none; /* Чтобы сквозь него можно было тыкнуть, если зависнет */
         }
 
-        /* Если класс .open добавлен, кольцо исчезает */
         body.open #preloader { opacity: 0; }
 
         .loader-ring {
-            width: 120px;
-            height: 120px;
-            border: 6px solid rgba(255, 204, 0, 0.1);
-            border-top: 6px solid var(--gold);
-            border-right: 6px solid var(--gold);
+            width: 100px;
+            height: 100px;
+            border: 5px solid rgba(189, 0, 255, 0.1);
+            border-top: 5px solid var(--primary);
+            border-right: 5px solid var(--accent);
             border-radius: 50%;
-            animation: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
-            box-shadow: 0 0 40px rgba(255, 204, 0, 0.4);
+            animation: spin 1s linear infinite;
+            /* Неоновое свечение */
+            box-shadow: 0 0 30px rgba(189, 0, 255, 0.4);
             margin-bottom: 20px;
         }
 
         .loader-text {
-            font-size: 1.2rem;
-            font-weight: 900;
+            font-weight: 800;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            color: white;
-            text-shadow: 0 0 15px var(--primary);
+            background: linear-gradient(90deg, #fff, #d966ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        /* --- 3. СЦЕНА (ОСНОВНОЙ КОНТЕНТ) --- */
+        /* --- 3. ОСНОВНОЙ КОНТЕНТ --- */
         .stage-container {
             position: relative;
-            min-height: 100vh;
-            width: 100%;
-            /* Фон сцены - свет прожектора */
-            background: radial-gradient(circle at 50% 10%, #4a0072 0%, #050505 60%); 
+            z-index: 10;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 60px;
-            z-index: 10;
-            opacity: 0; /* Скрыто, пока шторы не откроются */
-            transition: opacity 1s ease 0.5s;
+            padding-top: 80px;
+            opacity: 0;
+            transition: opacity 1s ease 0.8s;
         }
 
         body.open .stage-container { opacity: 1; }
 
         h1 {
-            font-size: 4rem;
+            font-size: 3.5rem;
             text-transform: uppercase;
             font-weight: 900;
-            margin: 0 0 50px 0;
-            color: #fff;
-            text-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary);
-            letter-spacing: 5px;
+            letter-spacing: 3px;
+            margin-bottom: 50px;
+            /* Градиентный текст как на сайте */
+            background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(189, 0, 255, 0.5);
         }
 
         .grid {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 30px;
+            gap: 25px;
             width: 90%;
             max-width: 1200px;
         }
 
-        /* --- КАРТОЧКА ИГРОКА --- */
+        /* --- КАРТОЧКА УЧАСТНИКА (Стиль сайта LoliLand) --- */
         .card {
-            width: 280px;
-            background: rgba(20, 20, 20, 0.6); /* Полупрозрачный черный */
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(167, 0, 255, 0.3);
-            border-radius: 20px;
-            padding: 30px 20px;
+            width: 260px;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px); /* Эффект стекла */
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 25px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transition: transform 0.3s ease, border-color 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
         }
 
+        /* При наведении - свечение как у кнопок */
         .card:hover {
-            transform: translateY(-10px);
-            border-color: var(--gold);
-            box-shadow: 0 0 30px rgba(255, 204, 0, 0.2);
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 40px rgba(189, 0, 255, 0.2);
         }
 
         .avatar {
-            width: 90px; height: 90px;
-            background: linear-gradient(135deg, var(--primary), #5500aa);
+            width: 80px; height: 80px;
+            /* Градиент из фиолетового в розовый */
+            background: linear-gradient(135deg, #6a00ff, #bd00ff);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 40px; font-weight: bold;
+            font-size: 36px; font-weight: bold;
             color: white;
-            margin-bottom: 20px;
-            border: 4px solid rgba(0,0,0,0.3);
-            box-shadow: 0 0 25px var(--primary);
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 3px solid rgba(255,255,255,0.1);
         }
 
-        .nickname { font-size: 1.8rem; font-weight: bold; margin-bottom: 10px; }
-        
-        .score-box {
-            background: #111;
-            padding: 8px 20px;
-            border-radius: 50px;
-            border: 1px solid #333;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
+        .nickname {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #fff;
         }
-        
+
+        /* Плашка с раундами (как тег "Текущий онлайн") */
+        .score-pill {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 8px; height: 8px;
+            background-color: #00ff88; /* Зеленая точка как "Online" */
+            border-radius: 50%;
+            box-shadow: 0 0 5px #00ff88;
+        }
+
         .reward {
             font-size: 1rem;
-            color: var(--gold);
+            color: var(--accent);
+            font-weight: 700;
             text-transform: uppercase;
-            font-weight: 800;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
 
+        /* Анимация вращения */
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
     </style>
 </head>
 <body>
 
-    <!-- ШТОРКИ (Слой 2000) -->
+    <!-- ШТОРКИ -->
     <div class="curtain left"></div>
     <div class="curtain right"></div>
 
-    <!-- ЗАГРУЗКА (Слой 3000) -->
+    <!-- ЗАГРУЗКА (Фиолетовая) -->
     <div id="preloader">
         <div class="loader-ring"></div>
-        <div class="loader-text">Loli<br>Comedy</div>
+        <div class="loader-text">Loading...</div>
     </div>
 
-    <!-- КОНТЕНТ (Слой 10) -->
+    <!-- СЦЕНА -->
     <div class="stage-container">
         <h1>LoliComedy</h1>
         <div class="grid" id="grid">
-            <!-- Сюда попадут карточки -->
+            <!-- JS вставит карточки сюда -->
         </div>
     </div>
 
     <script>
-        // --- ЗАПУСК АНИМАЦИИ ---
+        // --- ЗАПУСК ---
         window.onload = () => {
-            // Ждем 2.5 секунды, затем убираем загрузку и открываем шторы
+            // Имитация загрузки ресурсов (2 секунды)
             setTimeout(() => {
                 document.body.classList.add('open');
-                
-                // Через 0.5 секунды после начала анимации вообще удаляем прелоадер из кода,
-                // чтобы он точно не мешал кликать
+                // Убираем прелоадер полностью
                 setTimeout(() => {
                     document.getElementById('preloader').style.display = 'none';
-                }, 500);
-                
-            }, 2500);
+                }, 1000);
+            }, 2000);
         };
 
-        // --- ЛОГИКА ДАННЫХ ---
+        // --- ЛОГИКА ---
         function getReward(rounds) {
-            if (rounds === 0) return "🎤 Разогрев";
-            if (rounds === 1) return "🍬 10k монет";
-            if (rounds === 2) return "💰 50k монет";
-            if (rounds === 3) return "🔮 Донат Кейс";
-            if (rounds === 4) return "💎 Редкий лут";
-            if (rounds >= 5) return "👑 КОРОЛЬ СМЕХА";
+            // Награды в стиле сервера
+            if (rounds === 0) return "🎤 Ожидание";
+            if (rounds === 1) return "🪙 10.000 монет";
+            if (rounds === 2) return "💰 50.000 монет";
+            if (rounds === 3) return "🔮 Мистик Кейс";
+            if (rounds === 4) return "🐲 Эндер Меч";
+            if (rounds >= 5) return "👑 LoliKing";
             return "---";
         }
 
@@ -224,23 +246,29 @@
             const data = JSON.parse(localStorage.getItem('eventData')) || [];
             const grid = document.getElementById('grid');
 
-            // Сортировка
             data.sort((a, b) => b.rounds - a.rounds);
 
             if (data.length === 0) {
-                grid.innerHTML = '<h3 style="color:#666;">Ожидание подключения к админке...</h3>';
+                grid.innerHTML = '<div style="color: #666; font-size: 1.2rem;">Ожидание участников...</div>';
                 return;
             }
 
             let html = '';
             data.forEach(p => {
-                const isFire = p.rounds >= 3 ? 'box-shadow: 0 0 30px var(--gold); border-color: var(--gold);' : '';
+                // Если много раундов, добавляем особое свечение рамке
+                const activeGlow = p.rounds >= 3 ? 'border-color: var(--primary); box-shadow: 0 0 20px rgba(189,0,255,0.3);' : '';
                 
+                // Меняем цвет точки в зависимости от прогресса
+                const dotColor = p.rounds > 0 ? '#00ff88' : '#666';
+
                 html += `
-                <div class="card">
-                    <div class="avatar" style="${isFire}">${p.name.charAt(0)}</div>
+                <div class="card" style="${activeGlow}">
+                    <div class="avatar">${p.name.charAt(0)}</div>
                     <div class="nickname">${p.name}</div>
-                    <div class="score-box">Раунды: <b style="color:white">${p.rounds}</b></div>
+                    <div class="score-pill">
+                        <span class="dot" style="background:${dotColor}; box-shadow:0 0 5px ${dotColor}"></span>
+                        Раунды: <b style="color:white; margin-left:4px;">${p.rounds}</b>
+                    </div>
                     <div class="reward">${getReward(p.rounds)}</div>
                 </div>
                 `;
