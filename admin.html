@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel - PurpleEvent</title>
+    <style>
+        body { font-family: sans-serif; background: #111; color: white; padding: 20px; }
+        .control-box { background: #222; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 10px; }
+        input { padding: 10px; background: #333; border: 1px solid #555; color: white; border-radius: 4px; flex-grow: 1; }
+        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 4px; font-weight: bold; color: white; }
+        .btn-add { background: #8e44ad; }
+        .btn-plus { background: #27ae60; width: 30px; }
+        .btn-minus { background: #f39c12; width: 30px; }
+        .btn-del { background: #c0392b; }
+        
+        .player-row { 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: #1a1a1a; padding: 10px; margin-bottom: 5px; border-radius: 4px; border-left: 3px solid #8e44ad; 
+        }
+    </style>
+</head>
+<body>
+    <h2>👮‍♂️ Админ-панель</h2>
+    <div class="control-box">
+        <input type="text" id="nameInput" placeholder="Никнейм участника">
+        <button class="btn-add" onclick="addPlayer()">Добавить</button>
+    </div>
+    <div id="list"></div>
+
+    <script>
+        // Загружаем данные или создаем пустой массив
+        let players = JSON.parse(localStorage.getItem('eventData')) || [];
+
+        function save() {
+            // Сохраняем в память браузера, чтобы index.html увидел это
+            localStorage.setItem('eventData', JSON.stringify(players));
+            render();
+        }
+
+        function addPlayer() {
+            const input = document.getElementById('nameInput');
+            if(!input.value) return;
+            players.push({ id: Date.now(), name: input.value, rounds: 0 });
+            input.value = '';
+            save();
+        }
+
+        function update(id, val) {
+            const p = players.find(x => x.id === id);
+            if(p) { p.rounds += val; if(p.rounds < 0) p.rounds = 0; save(); }
+        }
+
+        function remove(id) {
+            players = players.filter(x => x.id !== id);
+            save();
+        }
+
+        function render() {
+            const list = document.getElementById('list');
+            list.innerHTML = '';
+            players.forEach(p => {
+                list.innerHTML += `
+                    <div class="player-row">
+                        <span><b>${p.name}</b> (Раундов: ${p.rounds})</span>
+                        <div style="display:flex; gap:5px;">
+                            <button class="btn-minus" onclick="update(${p.id}, -1)">-</button>
+                            <button class="btn-plus" onclick="update(${p.id}, 1)">+</button>
+                            <button class="btn-del" onclick="remove(${p.id})">X</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        render();
+    </script>
+</body>
+</html>
