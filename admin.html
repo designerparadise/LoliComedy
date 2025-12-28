@@ -2,235 +2,85 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <title>Admin - LoliComedy</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Control</title>
     <style>
-        :root {
-            --primary: #bd00ff;
-            --bg-dark: #07030f;
-            --glass: rgba(30, 30, 40, 0.6);
-            --border: rgba(189, 0, 255, 0.3);
-            --white: #ffffff;
-            --green: #00e676;
-            --red: #ff3d00;
-        }
-
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--bg-dark);
-            background-image: radial-gradient(circle at 50% -20%, #2a0045 0%, #07030f 70%);
-            color: var(--white);
-            margin: 0;
-            padding: 40px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 700px;
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-
-        h1 {
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 30px;
-            background: linear-gradient(90deg, #fff, var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 900;
-        }
-
-        /* Поле ввода */
-        .input-group {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 40px;
-        }
-
-        input {
-            flex-grow: 1;
-            padding: 15px 20px;
-            border-radius: 12px;
-            border: 2px solid #333;
-            background: #151515;
-            color: white;
-            font-size: 1.1rem;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(189,0,255,0.2); }
-
-        /* Кнопки */
-        button {
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            border-radius: 10px;
-            transition: transform 0.1s, filter 0.2s;
-        }
-        button:active { transform: scale(0.95); }
+        body { font-family: 'Segoe UI', sans-serif; background: #07030f; color: white; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 600px; background: rgba(30, 20, 40, 0.8); padding: 20px; border-radius: 20px; border: 1px solid #444; }
+        h1 { text-align: center; color: #bd00ff; margin-bottom: 20px; text-transform: uppercase; }
+        
+        .input-group { display: flex; gap: 10px; margin-bottom: 30px; }
+        input { flex: 1; padding: 12px; background: #111; border: 1px solid #333; color: white; border-radius: 8px; outline: none; }
+        input:focus { border-color: #bd00ff; }
+        
+        button { border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; }
         button:hover { filter: brightness(1.2); }
-
-        .btn-add {
-            background: var(--primary);
-            color: white;
-            padding: 0 30px;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Список игроков */
-        .player-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .player-card {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 4px solid var(--primary);
-            animation: fadeIn 0.3s ease;
-        }
-
-        .info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .name { font-size: 1.3rem; font-weight: bold; }
-        .score { font-size: 0.9rem; color: #aaa; margin-top: 4px; }
-        .score b { color: var(--primary); font-size: 1.1rem; }
-
-        .actions {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .btn-circle {
-            width: 45px;
-            height: 45px;
-            border-radius: 12px;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-
-        .btn-minus { background: #333; color: #aaa; }
-        .btn-plus { background: var(--green); color: #003300; }
-        .btn-del { background: rgba(255, 61, 0, 0.1); color: var(--red); font-size: 1.2rem; margin-left: 10px; }
-        .btn-del:hover { background: var(--red); color: white; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-add { background: #bd00ff; width: 100px; }
+        
+        .player-row { display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.3); padding: 10px 15px; border-radius: 10px; margin-bottom: 8px; border-left: 3px solid #bd00ff; }
+        .controls { display: flex; gap: 5px; }
+        .btn-act { width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .plus { background: #00ffea; color: #000; }
+        .minus { background: #444; color: #aaa; }
+        .del { background: #ff3355; margin-left: 10px; }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <h1>Control Panel</h1>
-
+        <h1>Admin Panel</h1>
         <div class="input-group">
-            <input type="text" id="nameInput" placeholder="Никнейм игрока..." onkeypress="handleEnter(event)">
-            <button class="btn-add" onclick="addPlayer()">Добавить</button>
+            <input type="text" id="nameInput" placeholder="Никнейм игрока" onkeypress="if(event.key==='Enter') addPlayer()">
+            <button class="btn-add" onclick="addPlayer()">ADD</button>
         </div>
-
-        <div class="player-list" id="list">
-            <!-- Сюда добавляются игроки -->
-        </div>
+        <div id="list"></div>
     </div>
 
     <script>
-        // Загрузка данных
         let players = JSON.parse(localStorage.getItem('eventData')) || [];
 
-        function save() {
-            localStorage.setItem('eventData', JSON.stringify(players));
-            render();
-        }
-
-        function handleEnter(e) {
-            if (e.key === 'Enter') addPlayer();
-        }
-
+        function save() { localStorage.setItem('eventData', JSON.stringify(players)); render(); }
+        
         function addPlayer() {
             const input = document.getElementById('nameInput');
-            const name = input.value.trim();
-            if (!name) return;
-
-            players.push({
-                id: Date.now(),
-                name: name,
-                rounds: 0
-            });
-            input.value = '';
-            save();
+            if(!input.value.trim()) return;
+            players.push({ id: Date.now(), name: input.value.trim(), rounds: 0 });
+            input.value = ''; save();
         }
 
-        function changeScore(id, amount) {
-            const player = players.find(p => p.id === id);
-            if (player) {
-                player.rounds += amount;
-                if (player.rounds < 0) player.rounds = 0;
-                save();
-            }
+        function update(id, val) {
+            const p = players.find(x => x.id === id);
+            if(p) { p.rounds += val; if(p.rounds < 0) p.rounds = 0; save(); }
         }
 
-        function removePlayer(id) {
-            if(confirm('Удалить участника?')) {
-                players = players.filter(p => p.id !== id);
-                save();
-            }
+        function del(id) {
+            if(confirm('Удалить?')) { players = players.filter(x => x.id !== id); save(); }
         }
 
         function render() {
             const list = document.getElementById('list');
             list.innerHTML = '';
+            // Сортировка такая же как на сайте: Баллы -> Время добавления
+            players.sort((a, b) => {
+                if (b.rounds !== a.rounds) return b.rounds - a.rounds;
+                return a.id - b.id;
+            });
 
-            // Сортировка: Лидеры сверху
-            players.sort((a, b) => b.rounds - a.rounds);
-
-            if (players.length === 0) {
-                list.innerHTML = '<div style="text-align:center; color:#555;">Список пуст. Добавьте участников.</div>';
-                return;
-            }
-
-            players.forEach(p => {
+            players.forEach((p, index) => {
                 list.innerHTML += `
-                    <div class="player-card">
-                        <div class="info">
-                            <span class="name">${p.name}</span>
-                            <span class="score">Раунды: <b>${p.rounds}</b></span>
+                    <div class="player-row">
+                        <div>
+                            <span style="color:#888; margin-right:5px; font-size:0.8rem;">#${index+1}</span>
+                            <b>${p.name}</b> <small style="color:#aaa">(${p.rounds})</small>
                         </div>
-                        <div class="actions">
-                            <button class="btn-circle btn-minus" onclick="changeScore(${p.id}, -1)">−</button>
-                            <button class="btn-circle btn-plus" onclick="changeScore(${p.id}, 1)">+</button>
-                            <button class="btn-circle btn-del" onclick="removePlayer(${p.id})" title="Удалить">🗑</button>
+                        <div class="controls">
+                            <button class="btn-act minus" onclick="update(${p.id}, -1)">-</button>
+                            <button class="btn-act plus" onclick="update(${p.id}, 1)">+</button>
+                            <button class="btn-act del" onclick="del(${p.id})">×</button>
                         </div>
                     </div>
                 `;
             });
         }
-
-        // Первый запуск
         render();
     </script>
 </body>
