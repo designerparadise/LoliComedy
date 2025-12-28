@@ -2,281 +2,235 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>LoliComedy Event</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Control</title>
     <style>
         :root {
-            /* Фирменная палитра */
             --primary: #bd00ff;
-            --accent: #d966ff;
             --bg-dark: #07030f;
-            --card-bg: rgba(20, 10, 30, 0.7);
-            
-            /* Цвета штор */
-            --curtain-base: #120024;    /* Темно-фиолетовая основа */
-            --curtain-shadow: #05000a;  /* Тень в складке */
-            --curtain-highlight: #2a0052; /* Свет на складке */
+            --glass: rgba(30, 30, 40, 0.6);
+            --border: rgba(189, 0, 255, 0.3);
+            --white: #ffffff;
+            --green: #00e676;
+            --red: #ff3d00;
         }
 
         body {
-            margin: 0;
-            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
             background-color: var(--bg-dark);
-            background-image: radial-gradient(circle at 50% 0%, #2a0045 0%, #07030f 60%);
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            color: #fff;
-            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% -20%, #2a0045 0%, #07030f 70%);
+            color: var(--white);
+            margin: 0;
+            padding: 40px;
             min-height: 100vh;
-        }
-
-        /* --- ШТОРЫ (ТЕАТРАЛЬНЫЙ ЭФФЕКТ) --- */
-        .curtain {
-            position: fixed;
-            top: 0;
-            height: 100vh;
-            width: 51%; /* Чуть больше половины для перекрытия */
-            z-index: 2000;
-            transition: transform 2.5s cubic-bezier(0.77, 0, 0.175, 1);
-            
-            /* 1. Базовый цвет */
-            background-color: var(--curtain-base);
-            
-            /* 2. Имитация складок ткани (градиент) */
-            background-image: repeating-linear-gradient(
-                90deg,
-                var(--curtain-shadow) 0px,
-                var(--curtain-shadow) 10px,
-                var(--curtain-base) 30px,
-                var(--curtain-highlight) 50px,
-                var(--curtain-base) 70px,
-                var(--curtain-shadow) 90px
-            );
-
-            /* 3. Внутренняя тень для объема (виньетка) */
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
-        }
-
-        .curtain.left { 
-            left: 0; 
-            transform-origin: left; 
-            /* Золотая каемка по центру */
-            border-right: 2px solid #6a00ff; 
-        }
-        
-        .curtain.right { 
-            right: 0; 
-            transform-origin: right; 
-            /* Золотая каемка по центру */
-            border-left: 2px solid #6a00ff; 
-        }
-
-        /* Анимация открытия */
-        body.open .curtain.left { transform: translateX(-100%); }
-        body.open .curtain.right { transform: translateX(100%); }
-
-
-        /* --- ЗАГРУЗКА --- */
-        #preloader {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 3000;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
+            justify-content: center;
         }
 
-        body.open #preloader { opacity: 0; }
-
-        .loader-ring {
-            width: 80px;
-            height: 80px;
-            border: 4px solid rgba(189, 0, 255, 0.1);
-            border-top: 4px solid var(--primary);
-            border-right: 4px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            box-shadow: 0 0 30px rgba(189, 0, 255, 0.4);
-            margin-bottom: 20px;
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
-
-        .loader-text {
-            font-weight: 800;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            color: white;
-            text-shadow: 0 0 10px var(--primary);
-        }
-
-        /* --- СЦЕНА --- */
-        .stage-container {
-            position: relative;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 80px;
-            opacity: 0;
-            transition: opacity 1s ease 1s; /* Появляется чуть позже открытия штор */
-        }
-
-        body.open .stage-container { opacity: 1; }
 
         h1 {
-            font-size: 4rem;
+            text-align: center;
             text-transform: uppercase;
-            font-weight: 900;
-            letter-spacing: 5px;
-            margin-bottom: 50px;
-            background: linear-gradient(180deg, #fff 0%, #b0b0b0 100%);
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, #fff, var(--primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 40px rgba(189, 0, 255, 0.6);
+            font-weight: 900;
         }
 
-        .grid {
+        /* Поле ввода */
+        .input-group {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 25px;
-            width: 90%;
-            max-width: 1200px;
+            gap: 15px;
+            margin-bottom: 40px;
         }
 
-        /* --- КАРТОЧКА --- */
-        .card {
-            width: 250px;
-            background: var(--card-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 25px;
+        input {
+            flex-grow: 1;
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 2px solid #333;
+            background: #151515;
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(189,0,255,0.2); }
+
+        /* Кнопки */
+        button {
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 10px;
+            transition: transform 0.1s, filter 0.2s;
+        }
+        button:active { transform: scale(0.95); }
+        button:hover { filter: brightness(1.2); }
+
+        .btn-add {
+            background: var(--primary);
+            color: white;
+            padding: 0 30px;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Список игроков */
+        .player-list {
             display: flex;
             flex-direction: column;
+            gap: 15px;
+        }
+
+        .player-card {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-left: 4px solid var(--primary);
+            animation: fadeIn 0.3s ease;
         }
 
-        .card:hover {
-            transform: translateY(-8px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 40px rgba(189, 0, 255, 0.25);
+        .info {
+            display: flex;
+            flex-direction: column;
         }
 
-        .avatar {
-            width: 70px; height: 70px;
-            background: linear-gradient(135deg, #6a00ff, #bd00ff);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 32px; font-weight: bold;
-            margin-bottom: 15px;
-            border: 3px solid rgba(255,255,255,0.15);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        .name { font-size: 1.3rem; font-weight: bold; }
+        .score { font-size: 0.9rem; color: #aaa; margin-top: 4px; }
+        .score b { color: var(--primary); font-size: 1.1rem; }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
         }
 
-        .nickname { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; }
-
-        .score-pill {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 5px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            color: #ccc;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 15px;
+        .btn-circle {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            font-size: 1.5rem;
             display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
+            color: white;
         }
 
-        .dot {
-            width: 6px; height: 6px;
-            background-color: #00ff88;
-            border-radius: 50%;
-            box-shadow: 0 0 4px #00ff88;
-        }
+        .btn-minus { background: #333; color: #aaa; }
+        .btn-plus { background: var(--green); color: #003300; }
+        .btn-del { background: rgba(255, 61, 0, 0.1); color: var(--red); font-size: 1.2rem; margin-left: 10px; }
+        .btn-del:hover { background: var(--red); color: white; }
 
-        .reward { font-size: 0.9rem; color: var(--accent); font-weight: 700; text-transform: uppercase; }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <!-- ШТОРЫ (с текстурой складок) -->
-    <div class="curtain left"></div>
-    <div class="curtain right"></div>
+    <div class="container">
+        <h1>Control Panel</h1>
 
-    <!-- ЗАГРУЗКА -->
-    <div id="preloader">
-        <div class="loader-ring"></div>
-        <div class="loader-text">Loading...</div>
-    </div>
+        <div class="input-group">
+            <input type="text" id="nameInput" placeholder="Никнейм игрока..." onkeypress="handleEnter(event)">
+            <button class="btn-add" onclick="addPlayer()">Добавить</button>
+        </div>
 
-    <!-- СЦЕНА -->
-    <div class="stage-container">
-        <h1>LoliComedy</h1>
-        <div class="grid" id="grid"></div>
+        <div class="player-list" id="list">
+            <!-- Сюда добавляются игроки -->
+        </div>
     </div>
 
     <script>
-        // --- ЗАПУСК ---
-        window.onload = () => {
-            // Ждем 2 секунды, затем открываем шторы
-            setTimeout(() => {
-                document.body.classList.add('open');
-                setTimeout(() => {
-                    document.getElementById('preloader').style.display = 'none';
-                }, 1000);
-            }, 2000);
-        };
+        // Загрузка данных
+        let players = JSON.parse(localStorage.getItem('eventData')) || [];
 
-        // --- ДАННЫЕ ---
-        function getReward(rounds) {
-            if (rounds === 0) return "🎤 Ожидание";
-            if (rounds === 1) return "🪙 10.000$";
-            if (rounds === 2) return "💰 50.000$";
-            if (rounds === 3) return "🔮 Кейс";
-            if (rounds === 4) return "🐲 Уник";
-            if (rounds >= 5) return "👑 KING";
-            return "---";
+        function save() {
+            localStorage.setItem('eventData', JSON.stringify(players));
+            render();
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') addPlayer();
+        }
+
+        function addPlayer() {
+            const input = document.getElementById('nameInput');
+            const name = input.value.trim();
+            if (!name) return;
+
+            players.push({
+                id: Date.now(),
+                name: name,
+                rounds: 0
+            });
+            input.value = '';
+            save();
+        }
+
+        function changeScore(id, amount) {
+            const player = players.find(p => p.id === id);
+            if (player) {
+                player.rounds += amount;
+                if (player.rounds < 0) player.rounds = 0;
+                save();
+            }
+        }
+
+        function removePlayer(id) {
+            if(confirm('Удалить участника?')) {
+                players = players.filter(p => p.id !== id);
+                save();
+            }
         }
 
         function render() {
-            const data = JSON.parse(localStorage.getItem('eventData')) || [];
-            const grid = document.getElementById('grid');
-            data.sort((a, b) => b.rounds - a.rounds);
+            const list = document.getElementById('list');
+            list.innerHTML = '';
 
-            if (data.length === 0) {
-                grid.innerHTML = '<div style="color: #666;">Ожидание...</div>';
+            // Сортировка: Лидеры сверху
+            players.sort((a, b) => b.rounds - a.rounds);
+
+            if (players.length === 0) {
+                list.innerHTML = '<div style="text-align:center; color:#555;">Список пуст. Добавьте участников.</div>';
                 return;
             }
 
-            let html = '';
-            data.forEach(p => {
-                const activeGlow = p.rounds >= 3 ? 'border-color: var(--primary); box-shadow: 0 0 25px rgba(189,0,255,0.3);' : '';
-                const dotColor = p.rounds > 0 ? '#00ff88' : '#555';
-
-                html += `
-                <div class="card" style="${activeGlow}">
-                    <div class="avatar">${p.name.charAt(0)}</div>
-                    <div class="nickname">${p.name}</div>
-                    <div class="score-pill">
-                        <span class="dot" style="background:${dotColor}; box-shadow:0 0 4px ${dotColor}"></span>
-                        Раунды: <b style="color:white; margin-left:4px;">${p.rounds}</b>
+            players.forEach(p => {
+                list.innerHTML += `
+                    <div class="player-card">
+                        <div class="info">
+                            <span class="name">${p.name}</span>
+                            <span class="score">Раунды: <b>${p.rounds}</b></span>
+                        </div>
+                        <div class="actions">
+                            <button class="btn-circle btn-minus" onclick="changeScore(${p.id}, -1)">−</button>
+                            <button class="btn-circle btn-plus" onclick="changeScore(${p.id}, 1)">+</button>
+                            <button class="btn-circle btn-del" onclick="removePlayer(${p.id})" title="Удалить">🗑</button>
+                        </div>
                     </div>
-                    <div class="reward">${getReward(p.rounds)}</div>
-                </div>
                 `;
             });
-
-            if (grid.innerHTML !== html) grid.innerHTML = html;
         }
 
-        setInterval(render, 500);
+        // Первый запуск
         render();
     </script>
 </body>
