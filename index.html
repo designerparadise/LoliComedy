@@ -5,48 +5,76 @@
     <title>LoliComedy Event</title>
     <style>
         :root {
-            /* Фирменная палитра LoliLand */
-            --primary: #bd00ff;       /* Основной неон */
-            --accent: #d966ff;        /* Светло-фиолетовый */
-            --bg-dark: #07030f;       /* Глубокий фон */
+            /* Фирменная палитра */
+            --primary: #bd00ff;
+            --accent: #d966ff;
+            --bg-dark: #07030f;
             --card-bg: rgba(20, 10, 30, 0.7);
-            --text-main: #ffffff;
-            --text-gray: #a0a0a0;
+            
+            /* Цвета штор */
+            --curtain-base: #120024;    /* Темно-фиолетовая основа */
+            --curtain-shadow: #05000a;  /* Тень в складке */
+            --curtain-highlight: #2a0052; /* Свет на складке */
         }
 
         body {
             margin: 0;
             padding: 0;
             background-color: var(--bg-dark);
-            /* Космический градиент на фоне */
             background-image: radial-gradient(circle at 50% 0%, #2a0045 0%, #07030f 60%);
             font-family: 'Segoe UI', Roboto, sans-serif;
-            color: var(--text-main);
+            color: #fff;
             overflow-x: hidden;
             min-height: 100vh;
         }
 
-        /* --- 1. ШТОРКИ (Теперь в стиле темной материи) --- */
+        /* --- ШТОРЫ (ТЕАТРАЛЬНЫЙ ЭФФЕКТ) --- */
         .curtain {
             position: fixed;
             top: 0;
             height: 100vh;
-            width: 51%;
-            background: #05020a;
+            width: 51%; /* Чуть больше половины для перекрытия */
             z-index: 2000;
-            transition: transform 1.8s cubic-bezier(0.8, 0, 0.2, 1);
+            transition: transform 2.5s cubic-bezier(0.77, 0, 0.175, 1);
             
-            /* Легкий фиолетовый отсвет на краях штор */
-            box-shadow: inset 0 0 80px rgba(189, 0, 255, 0.1);
+            /* 1. Базовый цвет */
+            background-color: var(--curtain-base);
+            
+            /* 2. Имитация складок ткани (градиент) */
+            background-image: repeating-linear-gradient(
+                90deg,
+                var(--curtain-shadow) 0px,
+                var(--curtain-shadow) 10px,
+                var(--curtain-base) 30px,
+                var(--curtain-highlight) 50px,
+                var(--curtain-base) 70px,
+                var(--curtain-shadow) 90px
+            );
+
+            /* 3. Внутренняя тень для объема (виньетка) */
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
         }
 
-        .curtain.left { left: 0; transform-origin: left; border-right: 1px solid #222; }
-        .curtain.right { right: 0; transform-origin: right; border-left: 1px solid #222; }
+        .curtain.left { 
+            left: 0; 
+            transform-origin: left; 
+            /* Золотая каемка по центру */
+            border-right: 2px solid #6a00ff; 
+        }
+        
+        .curtain.right { 
+            right: 0; 
+            transform-origin: right; 
+            /* Золотая каемка по центру */
+            border-left: 2px solid #6a00ff; 
+        }
 
+        /* Анимация открытия */
         body.open .curtain.left { transform: translateX(-100%); }
         body.open .curtain.right { transform: translateX(100%); }
 
-        /* --- 2. ЗАГРУЗКА (Фиолетовое кольцо) --- */
+
+        /* --- ЗАГРУЗКА --- */
         #preloader {
             position: fixed;
             top: 50%; left: 50%;
@@ -55,7 +83,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             pointer-events: none;
             transition: opacity 0.5s ease;
         }
@@ -63,28 +90,27 @@
         body.open #preloader { opacity: 0; }
 
         .loader-ring {
-            width: 100px;
-            height: 100px;
-            border: 5px solid rgba(189, 0, 255, 0.1);
-            border-top: 5px solid var(--primary);
-            border-right: 5px solid var(--accent);
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(189, 0, 255, 0.1);
+            border-top: 4px solid var(--primary);
+            border-right: 4px solid var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            /* Неоновое свечение */
             box-shadow: 0 0 30px rgba(189, 0, 255, 0.4);
             margin-bottom: 20px;
         }
 
         .loader-text {
             font-weight: 800;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            background: linear-gradient(90deg, #fff, #d966ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 0.9rem;
+            color: white;
+            text-shadow: 0 0 10px var(--primary);
         }
 
-        /* --- 3. ОСНОВНОЙ КОНТЕНТ --- */
+        /* --- СЦЕНА --- */
         .stage-container {
             position: relative;
             z-index: 10;
@@ -93,22 +119,21 @@
             align-items: center;
             padding-top: 80px;
             opacity: 0;
-            transition: opacity 1s ease 0.8s;
+            transition: opacity 1s ease 1s; /* Появляется чуть позже открытия штор */
         }
 
         body.open .stage-container { opacity: 1; }
 
         h1 {
-            font-size: 3.5rem;
+            font-size: 4rem;
             text-transform: uppercase;
             font-weight: 900;
-            letter-spacing: 3px;
+            letter-spacing: 5px;
             margin-bottom: 50px;
-            /* Градиентный текст как на сайте */
-            background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%);
+            background: linear-gradient(180deg, #fff 0%, #b0b0b0 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(189, 0, 255, 0.5);
+            text-shadow: 0 0 40px rgba(189, 0, 255, 0.6);
         }
 
         .grid {
@@ -120,90 +145,72 @@
             max-width: 1200px;
         }
 
-        /* --- КАРТОЧКА УЧАСТНИКА (Стиль сайта LoliLand) --- */
+        /* --- КАРТОЧКА --- */
         .card {
-            width: 260px;
+            width: 250px;
             background: var(--card-bg);
-            backdrop-filter: blur(12px); /* Эффект стекла */
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
             padding: 25px;
             display: flex;
             flex-direction: column;
             align-items: center;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            position: relative;
-            overflow: hidden;
         }
 
-        /* При наведении - свечение как у кнопок */
         .card:hover {
             transform: translateY(-8px);
             border-color: var(--primary);
-            box-shadow: 0 10px 40px rgba(189, 0, 255, 0.2);
+            box-shadow: 0 10px 40px rgba(189, 0, 255, 0.25);
         }
 
         .avatar {
-            width: 80px; height: 80px;
-            /* Градиент из фиолетового в розовый */
+            width: 70px; height: 70px;
             background: linear-gradient(135deg, #6a00ff, #bd00ff);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 36px; font-weight: bold;
-            color: white;
+            font-size: 32px; font-weight: bold;
             margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            border: 3px solid rgba(255,255,255,0.1);
+            border: 3px solid rgba(255,255,255,0.15);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
-        .nickname {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #fff;
-        }
+        .nickname { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; }
 
-        /* Плашка с раундами (как тег "Текущий онлайн") */
         .score-pill {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 0.9rem;
-            color: var(--text-gray);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #ccc;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .dot {
-            width: 8px; height: 8px;
-            background-color: #00ff88; /* Зеленая точка как "Online" */
+            width: 6px; height: 6px;
+            background-color: #00ff88;
             border-radius: 50%;
-            box-shadow: 0 0 5px #00ff88;
+            box-shadow: 0 0 4px #00ff88;
         }
 
-        .reward {
-            font-size: 1rem;
-            color: var(--accent);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+        .reward { font-size: 0.9rem; color: var(--accent); font-weight: 700; text-transform: uppercase; }
 
-        /* Анимация вращения */
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     </style>
 </head>
 <body>
 
-    <!-- ШТОРКИ -->
+    <!-- ШТОРЫ (с текстурой складок) -->
     <div class="curtain left"></div>
     <div class="curtain right"></div>
 
-    <!-- ЗАГРУЗКА (Фиолетовая) -->
+    <!-- ЗАГРУЗКА -->
     <div id="preloader">
         <div class="loader-ring"></div>
         <div class="loader-text">Loading...</div>
@@ -212,61 +219,53 @@
     <!-- СЦЕНА -->
     <div class="stage-container">
         <h1>LoliComedy</h1>
-        <div class="grid" id="grid">
-            <!-- JS вставит карточки сюда -->
-        </div>
+        <div class="grid" id="grid"></div>
     </div>
 
     <script>
         // --- ЗАПУСК ---
         window.onload = () => {
-            // Имитация загрузки ресурсов (2 секунды)
+            // Ждем 2 секунды, затем открываем шторы
             setTimeout(() => {
                 document.body.classList.add('open');
-                // Убираем прелоадер полностью
                 setTimeout(() => {
                     document.getElementById('preloader').style.display = 'none';
                 }, 1000);
             }, 2000);
         };
 
-        // --- ЛОГИКА ---
+        // --- ДАННЫЕ ---
         function getReward(rounds) {
-            // Награды в стиле сервера
             if (rounds === 0) return "🎤 Ожидание";
-            if (rounds === 1) return "🪙 10.000 монет";
-            if (rounds === 2) return "💰 50.000 монет";
-            if (rounds === 3) return "🔮 Мистик Кейс";
-            if (rounds === 4) return "🐲 Эндер Меч";
-            if (rounds >= 5) return "👑 LoliKing";
+            if (rounds === 1) return "🪙 10.000$";
+            if (rounds === 2) return "💰 50.000$";
+            if (rounds === 3) return "🔮 Кейс";
+            if (rounds === 4) return "🐲 Уник";
+            if (rounds >= 5) return "👑 KING";
             return "---";
         }
 
         function render() {
             const data = JSON.parse(localStorage.getItem('eventData')) || [];
             const grid = document.getElementById('grid');
-
             data.sort((a, b) => b.rounds - a.rounds);
 
             if (data.length === 0) {
-                grid.innerHTML = '<div style="color: #666; font-size: 1.2rem;">Ожидание участников...</div>';
+                grid.innerHTML = '<div style="color: #666;">Ожидание...</div>';
                 return;
             }
 
             let html = '';
             data.forEach(p => {
-                // Если много раундов, добавляем особое свечение рамке
-                const activeGlow = p.rounds >= 3 ? 'border-color: var(--primary); box-shadow: 0 0 20px rgba(189,0,255,0.3);' : '';
-                
-                // Меняем цвет точки в зависимости от прогресса
-                const dotColor = p.rounds > 0 ? '#00ff88' : '#666';
+                const activeGlow = p.rounds >= 3 ? 'border-color: var(--primary); box-shadow: 0 0 25px rgba(189,0,255,0.3);' : '';
+                const dotColor = p.rounds > 0 ? '#00ff88' : '#555';
 
                 html += `
                 <div class="card" style="${activeGlow}">
                     <div class="avatar">${p.name.charAt(0)}</div>
                     <div class="nickname">${p.name}</div>
                     <div class="score-pill">
-                        <span class="dot" style="background:${dotColor}; box-shadow:0 0 5px ${dotColor}"></span>
+                        <span class="dot" style="background:${dotColor}; box-shadow:0 0 4px ${dotColor}"></span>
                         Раунды: <b style="color:white; margin-left:4px;">${p.rounds}</b>
                     </div>
                     <div class="reward">${getReward(p.rounds)}</div>
