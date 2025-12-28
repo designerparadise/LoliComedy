@@ -5,16 +5,16 @@
     <title>LoliComedy Event</title>
     <style>
         :root {
-            /* Фирменная палитра */
+            /* Палитра LoliLand */
             --primary: #bd00ff;
             --accent: #d966ff;
             --bg-dark: #07030f;
             --card-bg: rgba(20, 10, 30, 0.7);
             
-            /* Цвета штор */
-            --curtain-base: #120024;    /* Темно-фиолетовая основа */
-            --curtain-shadow: #05000a;  /* Тень в складке */
-            --curtain-highlight: #2a0052; /* Свет на складке */
+            /* Цвета штор (Бархатный фиолетовый) */
+            --c-shadow: #1a002e;   /* Глубокая тень в складке */
+            --c-base: #2d004d;     /* Основной цвет */
+            --c-light: #4c0080;    /* Блик на изгибе */
         }
 
         body {
@@ -28,51 +28,72 @@
             min-height: 100vh;
         }
 
-        /* --- ШТОРЫ (ТЕАТРАЛЬНЫЙ ЭФФЕКТ) --- */
+        /* --- ВЕРХНИЙ ЛАМБРЕКЕН (Декоративная шапка) --- */
+        .curtain-top {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            z-index: 2001; /* Поверх боковых штор */
+            
+            /* Текстура бархата */
+            background: linear-gradient(180deg, var(--c-shadow) 0%, var(--c-base) 60%, var(--c-shadow) 100%);
+            
+            /* Волнистый край снизу (фестоны) */
+            --wave-size: 80px;
+            mask-image: radial-gradient(circle at 50% 120%, transparent 40%, black 41%);
+            mask-size: var(--wave-size) 100%;
+            mask-position: bottom;
+            -webkit-mask-image: radial-gradient(circle at 50% 135%, transparent 50%, black 50.5%);
+            -webkit-mask-size: var(--wave-size) 200%;
+            -webkit-mask-position: bottom;
+            
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            pointer-events: none;
+        }
+
+        /* --- БОКОВЫЕ ШТОРЫ --- */
         .curtain {
             position: fixed;
             top: 0;
             height: 100vh;
-            width: 51%; /* Чуть больше половины для перекрытия */
+            width: 50%; /* Ровно половина */
             z-index: 2000;
-            transition: transform 2.5s cubic-bezier(0.77, 0, 0.175, 1);
+            transition: transform 3s cubic-bezier(0.6, 0.05, 0.2, 1);
             
-            /* 1. Базовый цвет */
-            background-color: var(--curtain-base);
-            
-            /* 2. Имитация складок ткани (градиент) */
-            background-image: repeating-linear-gradient(
+            /* Реалистичные складки (Soft Velvet) */
+            background: repeating-linear-gradient(
                 90deg,
-                var(--curtain-shadow) 0px,
-                var(--curtain-shadow) 10px,
-                var(--curtain-base) 30px,
-                var(--curtain-highlight) 50px,
-                var(--curtain-base) 70px,
-                var(--curtain-shadow) 90px
+                var(--c-shadow) 0%,
+                var(--c-base) 10%,
+                var(--c-light) 20%,
+                var(--c-base) 30%,
+                var(--c-shadow) 40%
             );
-
-            /* 3. Внутренняя тень для объема (виньетка) */
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
+            /* Растягиваем текстуру, чтобы складки были широкими */
+            background-size: 200px 100%;
+            
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
         }
 
         .curtain.left { 
             left: 0; 
             transform-origin: left; 
-            /* Золотая каемка по центру */
-            border-right: 2px solid #6a00ff; 
+            border-right: 2px solid rgba(0,0,0,0.5);
         }
         
         .curtain.right { 
             right: 0; 
             transform-origin: right; 
-            /* Золотая каемка по центру */
-            border-left: 2px solid #6a00ff; 
+            border-left: 2px solid rgba(0,0,0,0.5);
+            /* Сдвиг фона, чтобы складки не зеркалились идеально (для реализма) */
+            background-position: -100px 0; 
         }
 
         /* Анимация открытия */
-        body.open .curtain.left { transform: translateX(-100%); }
-        body.open .curtain.right { transform: translateX(100%); }
-
+        body.open .curtain.left { transform: translateX(-90%); } /* Оставляем край виден */
+        body.open .curtain.right { transform: translateX(90%); }
 
         /* --- ЗАГРУЗКА --- */
         #preloader {
@@ -84,30 +105,32 @@
             flex-direction: column;
             align-items: center;
             pointer-events: none;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.8s ease;
         }
 
         body.open #preloader { opacity: 0; }
 
         .loader-ring {
-            width: 80px;
-            height: 80px;
-            border: 4px solid rgba(189, 0, 255, 0.1);
-            border-top: 4px solid var(--primary);
-            border-right: 4px solid var(--primary);
+            width: 90px;
+            height: 90px;
+            border: 3px solid rgba(189, 0, 255, 0.1);
+            border-top: 3px solid var(--primary);
+            border-right: 3px solid var(--accent);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            box-shadow: 0 0 30px rgba(189, 0, 255, 0.4);
-            margin-bottom: 20px;
+            box-shadow: 0 0 40px rgba(189, 0, 255, 0.5);
+            margin-bottom: 25px;
+            backdrop-filter: blur(2px);
         }
 
         .loader-text {
             font-weight: 800;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             text-transform: uppercase;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: white;
-            text-shadow: 0 0 10px var(--primary);
+            opacity: 0.8;
+            text-shadow: 0 0 15px var(--primary);
         }
 
         /* --- СЦЕНА --- */
@@ -117,9 +140,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 80px;
+            padding-top: 140px; /* Отступ больше из-за верхней шторы */
             opacity: 0;
-            transition: opacity 1s ease 1s; /* Появляется чуть позже открытия штор */
+            transition: opacity 1.5s ease 1s;
         }
 
         body.open .stage-container { opacity: 1; }
@@ -128,77 +151,88 @@
             font-size: 4rem;
             text-transform: uppercase;
             font-weight: 900;
-            letter-spacing: 5px;
+            letter-spacing: 6px;
             margin-bottom: 50px;
-            background: linear-gradient(180deg, #fff 0%, #b0b0b0 100%);
+            background: linear-gradient(180deg, #fff 20%, #888 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 40px rgba(189, 0, 255, 0.6);
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            filter: drop-shadow(0 0 15px rgba(189,0,255,0.4));
         }
 
         .grid {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 25px;
+            gap: 30px;
             width: 90%;
             max-width: 1200px;
         }
 
         /* --- КАРТОЧКА --- */
         .card {
-            width: 250px;
+            width: 260px;
             background: var(--card-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 25px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 30px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
         .card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-10px) scale(1.02);
             border-color: var(--primary);
-            box-shadow: 0 10px 40px rgba(189, 0, 255, 0.25);
+            box-shadow: 0 20px 50px rgba(189, 0, 255, 0.2);
+            background: rgba(40, 20, 60, 0.8);
         }
 
         .avatar {
-            width: 70px; height: 70px;
+            width: 80px; height: 80px;
             background: linear-gradient(135deg, #6a00ff, #bd00ff);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 32px; font-weight: bold;
+            font-size: 36px; font-weight: bold;
             margin-bottom: 15px;
-            border: 3px solid rgba(255,255,255,0.15);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 4px solid rgba(255,255,255,0.1);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
         }
 
-        .nickname { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; }
+        .nickname { font-size: 1.5rem; font-weight: 700; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
         .score-pill {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 5px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            color: #ccc;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.6);
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            color: #ddd;
+            border: 1px solid rgba(255, 255, 255, 0.05);
             margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         .dot {
-            width: 6px; height: 6px;
+            width: 8px; height: 8px;
             background-color: #00ff88;
             border-radius: 50%;
-            box-shadow: 0 0 4px #00ff88;
+            box-shadow: 0 0 8px #00ff88;
         }
 
-        .reward { font-size: 0.9rem; color: var(--accent); font-weight: 700; text-transform: uppercase; }
+        .reward { 
+            font-size: 0.95rem; 
+            color: var(--accent); 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(189,0,255,0.3);
+        }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -206,17 +240,20 @@
 </head>
 <body>
 
-    <!-- ШТОРЫ (с текстурой складок) -->
+    <!-- НОВОЕ: Верхний ламбрекен (волнистая шапка) -->
+    <div class="curtain-top"></div>
+
+    <!-- Боковые шторы -->
     <div class="curtain left"></div>
     <div class="curtain right"></div>
 
-    <!-- ЗАГРУЗКА -->
+    <!-- Загрузка -->
     <div id="preloader">
         <div class="loader-ring"></div>
-        <div class="loader-text">Loading...</div>
+        <div class="loader-text">Loading Assets...</div>
     </div>
 
-    <!-- СЦЕНА -->
+    <!-- Сцена -->
     <div class="stage-container">
         <h1>LoliComedy</h1>
         <div class="grid" id="grid"></div>
@@ -225,7 +262,6 @@
     <script>
         // --- ЗАПУСК ---
         window.onload = () => {
-            // Ждем 2 секунды, затем открываем шторы
             setTimeout(() => {
                 document.body.classList.add('open');
                 setTimeout(() => {
@@ -236,12 +272,12 @@
 
         // --- ДАННЫЕ ---
         function getReward(rounds) {
-            if (rounds === 0) return "🎤 Ожидание";
-            if (rounds === 1) return "🪙 10.000$";
-            if (rounds === 2) return "💰 50.000$";
-            if (rounds === 3) return "🔮 Кейс";
-            if (rounds === 4) return "🐲 Уник";
-            if (rounds >= 5) return "👑 KING";
+            if (rounds === 0) return "🎤 Разогрев";
+            if (rounds === 1) return "🪙 10.000 монет";
+            if (rounds === 2) return "💰 50.000 монет";
+            if (rounds === 3) return "🔮 Мистик Кейс";
+            if (rounds === 4) return "💎 Редкий лут";
+            if (rounds >= 5) return "👑 LoliKing";
             return "---";
         }
 
@@ -251,13 +287,13 @@
             data.sort((a, b) => b.rounds - a.rounds);
 
             if (data.length === 0) {
-                grid.innerHTML = '<div style="color: #666;">Ожидание...</div>';
+                grid.innerHTML = '<div style="color: #666; font-size:1.2rem; margin-top:50px;">Ожидание подключения к пульту...</div>';
                 return;
             }
 
             let html = '';
             data.forEach(p => {
-                const activeGlow = p.rounds >= 3 ? 'border-color: var(--primary); box-shadow: 0 0 25px rgba(189,0,255,0.3);' : '';
+                const activeGlow = p.rounds >= 3 ? 'border-color: var(--primary); box-shadow: 0 0 30px rgba(189,0,255,0.4);' : '';
                 const dotColor = p.rounds > 0 ? '#00ff88' : '#555';
 
                 html += `
@@ -265,7 +301,7 @@
                     <div class="avatar">${p.name.charAt(0)}</div>
                     <div class="nickname">${p.name}</div>
                     <div class="score-pill">
-                        <span class="dot" style="background:${dotColor}; box-shadow:0 0 4px ${dotColor}"></span>
+                        <span class="dot" style="background:${dotColor}; box-shadow:0 0 6px ${dotColor}"></span>
                         Раунды: <b style="color:white; margin-left:4px;">${p.rounds}</b>
                     </div>
                     <div class="reward">${getReward(p.rounds)}</div>
