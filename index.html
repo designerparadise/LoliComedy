@@ -11,10 +11,10 @@
             --bg-dark: #07030f;
             --card-bg: rgba(20, 10, 30, 0.7);
             
-            /* Цвета штор (Бархатный фиолетовый) */
-            --c-shadow: #1a002e;   /* Глубокая тень в складке */
-            --c-base: #2d004d;     /* Основной цвет */
-            --c-light: #4c0080;    /* Блик на изгибе */
+            /* Цвета штор */
+            --c-shadow: #1a002e;
+            --c-base: #2d004d;
+            --c-light: #4c0080;
         }
 
         body {
@@ -28,19 +28,16 @@
             min-height: 100vh;
         }
 
-        /* --- ВЕРХНИЙ ЛАМБРЕКЕН (Декоративная шапка) --- */
+        /* --- ВЕРХНИЙ ЛАМБРЕКЕН --- */
         .curtain-top {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 120px;
-            z-index: 2001; /* Поверх боковых штор */
-            
-            /* Текстура бархата */
+            z-index: 2001;
             background: linear-gradient(180deg, var(--c-shadow) 0%, var(--c-base) 60%, var(--c-shadow) 100%);
-            
-            /* Волнистый край снизу (фестоны) */
+            /* Волнистый край */
             --wave-size: 80px;
             mask-image: radial-gradient(circle at 50% 120%, transparent 40%, black 41%);
             mask-size: var(--wave-size) 100%;
@@ -48,7 +45,6 @@
             -webkit-mask-image: radial-gradient(circle at 50% 135%, transparent 50%, black 50.5%);
             -webkit-mask-size: var(--wave-size) 200%;
             -webkit-mask-position: bottom;
-            
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             pointer-events: none;
         }
@@ -58,11 +54,9 @@
             position: fixed;
             top: 0;
             height: 100vh;
-            width: 50%; /* Ровно половина */
+            width: 50%;
             z-index: 2000;
             transition: transform 3s cubic-bezier(0.6, 0.05, 0.2, 1);
-            
-            /* Реалистичные складки (Soft Velvet) */
             background: repeating-linear-gradient(
                 90deg,
                 var(--c-shadow) 0%,
@@ -71,28 +65,22 @@
                 var(--c-base) 30%,
                 var(--c-shadow) 40%
             );
-            /* Растягиваем текстуру, чтобы складки были широкими */
             background-size: 200px 100%;
-            
             box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
         }
 
         .curtain.left { 
-            left: 0; 
-            transform-origin: left; 
+            left: 0; transform-origin: left; 
             border-right: 2px solid rgba(0,0,0,0.5);
         }
         
         .curtain.right { 
-            right: 0; 
-            transform-origin: right; 
+            right: 0; transform-origin: right; 
             border-left: 2px solid rgba(0,0,0,0.5);
-            /* Сдвиг фона, чтобы складки не зеркалились идеально (для реализма) */
             background-position: -100px 0; 
         }
 
-        /* Анимация открытия */
-        body.open .curtain.left { transform: translateX(-90%); } /* Оставляем край виден */
+        body.open .curtain.left { transform: translateX(-90%); }
         body.open .curtain.right { transform: translateX(90%); }
 
         /* --- ЗАГРУЗКА --- */
@@ -111,8 +99,7 @@
         body.open #preloader { opacity: 0; }
 
         .loader-ring {
-            width: 90px;
-            height: 90px;
+            width: 90px; height: 90px;
             border: 3px solid rgba(189, 0, 255, 0.1);
             border-top: 3px solid var(--primary);
             border-right: 3px solid var(--accent);
@@ -124,12 +111,8 @@
         }
 
         .loader-text {
-            font-weight: 800;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            color: white;
-            opacity: 0.8;
+            font-weight: 800; letter-spacing: 4px; text-transform: uppercase;
+            font-size: 0.8rem; color: white; opacity: 0.8;
             text-shadow: 0 0 15px var(--primary);
         }
 
@@ -140,7 +123,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 140px; /* Отступ больше из-за верхней шторы */
+            padding-top: 140px;
             opacity: 0;
             transition: opacity 1.5s ease 1s;
         }
@@ -148,28 +131,20 @@
         body.open .stage-container { opacity: 1; }
 
         h1 {
-            font-size: 4rem;
-            text-transform: uppercase;
-            font-weight: 900;
-            letter-spacing: 6px;
+            font-size: 4rem; text-transform: uppercase; font-weight: 900; letter-spacing: 6px;
             margin-bottom: 50px;
             background: linear-gradient(180deg, #fff 20%, #888 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             text-shadow: 0 10px 30px rgba(0,0,0,0.5);
             filter: drop-shadow(0 0 15px rgba(189,0,255,0.4));
         }
 
         .grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 30px;
-            width: 90%;
-            max-width: 1200px;
+            display: flex; flex-wrap: wrap; justify-content: center;
+            gap: 30px; width: 90%; max-width: 1200px;
         }
 
-        /* --- КАРТОЧКА --- */
+        /* --- КАРТОЧКА (ИСПРАВЛЕННАЯ АНИМАЦИЯ) --- */
         .card {
             width: 260px;
             background: var(--card-bg);
@@ -181,7 +156,15 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            
+            /* --- ВАЖНЫЕ ИЗМЕНЕНИЯ ДЛЯ ПЛАВНОСТИ --- */
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                        box-shadow 0.3s ease, 
+                        border-color 0.3s ease;
+            transform: translateZ(0); /* Включает GPU */
+            backface-visibility: hidden; /* Убирает "дрожание" текста */
+            will-change: transform; /* Подсказка браузеру */
+            
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
@@ -190,6 +173,7 @@
             border-color: var(--primary);
             box-shadow: 0 20px 50px rgba(189, 0, 255, 0.2);
             background: rgba(40, 20, 60, 0.8);
+            z-index: 100; /* Чтобы карточка была поверх соседей */
         }
 
         .avatar {
@@ -207,30 +191,17 @@
 
         .score-pill {
             background: rgba(0, 0, 0, 0.6);
-            padding: 6px 18px;
-            border-radius: 30px;
-            font-size: 0.9rem;
-            color: #ddd;
+            padding: 6px 18px; border-radius: 30px;
+            font-size: 0.9rem; color: #ddd;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            margin-bottom: 15px; display: flex; align-items: center; gap: 8px;
         }
 
-        .dot {
-            width: 8px; height: 8px;
-            background-color: #00ff88;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #00ff88;
-        }
-
+        .dot { width: 8px; height: 8px; background-color: #00ff88; border-radius: 50%; box-shadow: 0 0 8px #00ff88; }
+        
         .reward { 
-            font-size: 0.95rem; 
-            color: var(--accent); 
-            font-weight: 800; 
-            text-transform: uppercase; 
-            letter-spacing: 1px;
+            font-size: 0.95rem; color: var(--accent); font-weight: 800; 
+            text-transform: uppercase; letter-spacing: 1px;
             text-shadow: 0 0 10px rgba(189,0,255,0.3);
         }
 
@@ -240,27 +211,21 @@
 </head>
 <body>
 
-    <!-- НОВОЕ: Верхний ламбрекен (волнистая шапка) -->
     <div class="curtain-top"></div>
-
-    <!-- Боковые шторы -->
     <div class="curtain left"></div>
     <div class="curtain right"></div>
-
-    <!-- Загрузка -->
+    
     <div id="preloader">
         <div class="loader-ring"></div>
         <div class="loader-text">Loading Assets...</div>
     </div>
 
-    <!-- Сцена -->
     <div class="stage-container">
         <h1>LoliComedy</h1>
         <div class="grid" id="grid"></div>
     </div>
 
     <script>
-        // --- ЗАПУСК ---
         window.onload = () => {
             setTimeout(() => {
                 document.body.classList.add('open');
@@ -270,7 +235,6 @@
             }, 2000);
         };
 
-        // --- ДАННЫЕ ---
         function getReward(rounds) {
             if (rounds === 0) return "🎤 Разогрев";
             if (rounds === 1) return "🪙 10.000 монет";
@@ -281,10 +245,27 @@
             return "---";
         }
 
+        // ПЕРЕМЕННАЯ ДЛЯ ЗАЩИТЫ ОТ ПЕРЕРИСОВКИ
+        let lastDataState = '';
+
         function render() {
             const data = JSON.parse(localStorage.getItem('eventData')) || [];
-            const grid = document.getElementById('grid');
+            
+            // Сортируем (Лидеры первыми)
             data.sort((a, b) => b.rounds - a.rounds);
+
+            // Превращаем данные в строку для проверки
+            const currentDataState = JSON.stringify(data);
+
+            // --- ГЛАВНОЕ ИСПРАВЛЕНИЕ ---
+            // Если данные НЕ изменились с прошлого раза, мы просто выходим.
+            // Сайт НЕ перерисовывается, и анимация наведения НЕ сбрасывается.
+            if (currentDataState === lastDataState) return;
+            
+            // Если данные изменились, запоминаем новое состояние
+            lastDataState = currentDataState;
+
+            const grid = document.getElementById('grid');
 
             if (data.length === 0) {
                 grid.innerHTML = '<div style="color: #666; font-size:1.2rem; margin-top:50px;">Ожидание подключения к пульту...</div>';
@@ -309,10 +290,11 @@
                 `;
             });
 
-            if (grid.innerHTML !== html) grid.innerHTML = html;
+            grid.innerHTML = html;
         }
 
-        setInterval(render, 500);
+        // Проверяем изменения каждые 200мс (достаточно быстро, но не нагружает)
+        setInterval(render, 200);
         render();
     </script>
 </body>
