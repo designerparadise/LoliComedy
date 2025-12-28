@@ -6,7 +6,7 @@
     <style>
         :root {
             --primary: #bd00ff;
-            --accent: #d966ff; /* Розово-фиолетовый акцент для монет */
+            --accent: #d966ff;
             --bg-dark: #07030f;
             --card-bg: rgba(20, 10, 30, 0.75);
             
@@ -78,7 +78,7 @@
             text-shadow: 0 0 30px rgba(189, 0, 255, 0.4);
         }
 
-        /* --- ИНФО-ПАНЕЛЬ (Без статуса) --- */
+        /* --- ИНФО-ПАНЕЛЬ --- */
         .info-sidebar {
             position: fixed; 
             left: 70px; 
@@ -124,14 +124,34 @@
             position: absolute; top: 10px; left: 10px;
             background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
             border-radius: 8px; padding: 2px 8px; font-size: 0.8rem; color: #888;
+            z-index: 10;
         }
         .card.leader .queue-badge { background: var(--primary); color: white; border: none; font-weight: bold; }
 
-        .avatar {
-            width: 70px; height: 70px; background: linear-gradient(135deg, #6a00ff, #bd00ff);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 32px; font-weight: bold; margin-bottom: 12px;
-            border: 3px solid rgba(255,255,255,0.1); box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        /* --- НОВЫЙ СТИЛЬ АВАТАРОК (С ПОДДЕРЖКОЙ КАРТИНОК) --- */
+        .avatar-container {
+            width: 80px; height: 80px; 
+            margin-bottom: 12px;
+            position: relative;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6a00ff, #bd00ff);
+            border: 3px solid rgba(255,255,255,0.1); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+
+        .avatar-img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-fallback {
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px; font-weight: bold; color: white;
+            position: absolute; top: 0; left: 0;
+            background: linear-gradient(135deg, #6a00ff, #bd00ff);
         }
 
         .nickname { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; }
@@ -143,7 +163,6 @@
         }
         .dot { width: 6px; height: 6px; background-color: #00ff88; border-radius: 50%; box-shadow: 0 0 6px #00ff88; }
         
-        /* СТИЛЬ НАГРАДЫ (С МЕШКОМ И КАПСОМ) */
         .reward { 
             font-size: 1rem; 
             color: var(--accent); /* Розово-фиолетовый */
@@ -170,7 +189,7 @@
         <div class="loader-text">LoliLand Event</div>
     </div>
 
-    <!-- ИНФО-ПАНЕЛЬ (Без статуса) -->
+    <!-- ИНФО-ПАНЕЛЬ -->
     <div class="info-sidebar">
         <div class="info-title">💰 Призовой фонд</div>
         <div class="info-row"><span>1 Раунд:</span> <b>10.000</b></div>
@@ -194,7 +213,6 @@
             }, 2000);
         };
 
-        // ЛОГИКА НАГРАД (С ТЕКСТОМ "МОНЕТ" И МЕШКОМ)
         function getReward(rounds) {
             if (rounds === 0) return "Ожидание";
             if (rounds === 1) return "💰 10.000 МОНЕТ";
@@ -237,13 +255,30 @@
                 const activeGlow = isLeader ? `border-color: ${glowColor}; box-shadow: 0 0 25px ${glowColor};` : '';
                 const dotColor = isLeader ? '#00ffea' : '#555';
                 const queueClass = isLeader ? 'leader' : '';
-                
                 const badgeText = isLeader ? `TOP #${index + 1}` : `Queue #${index + 1}`;
+
+                // --- ЛОГИКА АВАТАРКИ ---
+                let avatarHtml = '';
+                // Проверяем, есть ли ссылка в поле avatar
+                if (p.avatar && p.avatar.trim() !== '') {
+                    // Если ссылка есть, создаем IMG + Fallback на случай ошибки
+                    avatarHtml = `
+                        <img src="${p.avatar}" class="avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        <div class="avatar-fallback" style="display:none">${p.name.charAt(0)}</div>
+                    `;
+                } else {
+                    // Если ссылки нет, показываем сразу букву
+                    avatarHtml = `<div class="avatar-fallback">${p.name.charAt(0)}</div>`;
+                }
 
                 html += `
                 <div class="card ${queueClass}" style="${activeGlow}">
                     <div class="queue-badge">${badgeText}</div>
-                    <div class="avatar">${p.name.charAt(0)}</div>
+                    
+                    <div class="avatar-container">
+                        ${avatarHtml}
+                    </div>
+                    
                     <div class="nickname">${p.name}</div>
                     <div class="score-pill">
                         <span class="dot" style="background:${dotColor}; box-shadow:0 0 6px ${dotColor}"></span>
