@@ -38,7 +38,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Admin Panel</h1>
+        <h1>Admin Cloud ☁️</h1>
         
         <!-- Два поля: Имя и Ссылка -->
         <div class="input-group">
@@ -46,60 +46,105 @@
             <input type="text" id="avatarInput" placeholder="Ссылка на аватар (ПКМ -> Копировать URL)">
         </div>
         <div class="btn-container">
-            <button class="btn-add" onclick="addPlayer()">ДОБАВИТЬ</button>
+            <button class="btn-add" id="addBtn">ДОБАВИТЬ</button>
         </div>
 
-        <div id="list"></div>
+        <div id="list">Загрузка данных...</div>
     </div>
 
-    <script>
-        let players = JSON.parse(localStorage.getItem('eventData')) || [];
+    <!-- ПОДКЛЮЧЕНИЕ FIREBASE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        function save() { localStorage.setItem('eventData', JSON.stringify(players)); render(); }
+        // Твои ключи
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhMA1jiefu1qCNyXwthGJC021t6VFjhDw",
+            authDomain: "loli-event.firebaseapp.com",
+            databaseURL: "https://loli-event-default-rtdb.firebaseio.com",
+            projectId: "loli-event",
+            storageBucket: "loli-event.firebasestorage.app",
+            messagingSenderId: "752512367668",
+            appId: "1:752512367668:web:3e595160cd3db5b79f5e61"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
         
-        function addPlayer() {
+        let players = [];
+
+        // 1. СЛУШАЕМ БАЗУ (ЧТЕНИЕ)
+        const playersRef = ref(db, 'players');
+        onValue(playersRef, (snapshot) => {
+            const dataObj = snapshot.val();
+            
+            if (dataObj) {
+                players = Object.values(dataObj);
+            } else {
+                players = [];
+            }
+            render();
+        });
+
+        // 2. ФУНКЦИЯ ДОБАВЛЕНИЯ
+        document.getElementById('addBtn').addEventListener('click', () => {
             const nameIn = document.getElementById('nameInput');
             const avaIn = document.getElementById('avatarInput');
             
             const name = nameIn.value.trim();
-            const avatar = avaIn.value.trim(); // Берём ссылку
+            const avatar = avaIn.value.trim(); 
 
             if(!name) return;
             
-            players.push({ 
-                id: Date.now(), 
+            const newId = Date.now();
+            const newPlayer = { 
+                id: newId, 
                 name: name, 
-                avatar: avatar, // Сохраняем ссылку в базу
+                avatar: avatar,
                 rounds: 0 
-            });
+            };
+            
+            // Отправляем в Firebase
+            set(ref(db, 'players/' + newId), newPlayer);
             
             nameIn.value = '';
             avaIn.value = '';
-            save();
-        }
+        });
 
-        function update(id, val) {
+        // 3. ФУНКЦИЯ ОБНОВЛЕНИЯ (Делаем глобальной для HTML onclick)
+        window.update = function(id, val) {
             const p = players.find(x => x.id === id);
-            if(p) { p.rounds += val; if(p.rounds < 0) p.rounds = 0; save(); }
+            if(p) { 
+                let newRounds = p.rounds + val;
+                if(newRounds < 0) newRounds = 0;
+                set(ref(db, 'players/' + id + '/rounds'), newRounds);
+            }
         }
 
-        function del(id) {
-            if(confirm('Удалить игрока?')) { players = players.filter(x => x.id !== id); save(); }
+        // 4. ФУНКЦИЯ УДАЛЕНИЯ
+        window.del = function(id) {
+            if(confirm('Удалить игрока?')) { 
+                remove(ref(db, 'players/' + id));
+            }
         }
 
+        // 5. ОТРИСОВКА
         function render() {
             const list = document.getElementById('list');
             list.innerHTML = '';
             
-            // Сортировка: Баллы -> Время
             players.sort((a, b) => {
                 if (b.rounds !== a.rounds) return b.rounds - a.rounds;
                 return a.id - b.id;
             });
 
+            if(players.length === 0) {
+                list.innerHTML = '<div style="text-align:center; color:#555;">Список пуст</div>';
+                return;
+            }
+
             players.forEach((p, index) => {
                 // Если аватарка есть - показываем картинку, если нет - заглушку
-                // Это только для админки, чтобы ты видел, правильно ли скопировал ссылку
                 const avaSrc = p.avatar ? p.avatar : `https://placehold.co/100x100/333/bd00ff?text=${p.name.charAt(0)}`;
 
                 list.innerHTML += `
@@ -121,7 +166,6 @@
                 `;
             });
         }
-        render();
     </script>
 </body>
 </html>
