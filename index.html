@@ -2,27 +2,51 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>LoliComedy Event</title>
+    <title>LoliComedy Winter Event</title>
     <style>
         :root {
+            /* Зимняя палитра LoliLand */
             --primary: #bd00ff;
-            --accent: #d966ff;
-            --bg-dark: #07030f;
-            --card-bg: rgba(20, 10, 30, 0.75);
-            /* Цвета штор */
-            --c-shadow: #140024;
-            --c-base: #250040;
-            --c-light: #440075;
+            --accent: #00fff2; /* Ледяной циан */
+            --bg-dark: #05020a;
+            --card-bg: rgba(20, 25, 40, 0.65); /* Более холодный оттенок */
+            --frost: rgba(180, 240, 255, 0.1);
+            
+            /* Цвета штор (Оставляем темными) */
+            --c-shadow: #0a0014;
+            --c-base: #1a002e;
+            --c-light: #2d004d;
         }
 
         body {
             margin: 0; padding: 0;
             background-color: var(--bg-dark);
-            background-image: radial-gradient(circle at 60% 0%, #2a0045 0%, #07030f 70%);
+            background-image: radial-gradient(circle at 50% 0%, #220045 0%, #020105 80%);
             font-family: 'Segoe UI', Roboto, sans-serif;
             color: #fff;
             overflow-x: hidden;
             min-height: 100vh;
+        }
+
+        /* --- СНЕГ (Основа) --- */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: white;
+            font-size: 1em;
+            text-shadow: 0 0 5px #000;
+            z-index: 1; /* Позади интерфейса */
+            user-select: none;
+            cursor: default;
+            animation-name: snowfall;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes snowfall {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
         }
 
         /* --- ШТОРЫ --- */
@@ -35,6 +59,12 @@
             -webkit-mask-size: 60px 100%; -webkit-mask-position: bottom;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8); pointer-events: none;
         }
+        /* Гирлянда (подсветка сверху) */
+        .curtain-top::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px;
+            background: repeating-linear-gradient(90deg, #ff0055, #ff0055 10px, transparent 10px, transparent 20px, #00ffea 20px, #00ffea 30px, transparent 30px, transparent 40px);
+            box-shadow: 0 0 15px white; opacity: 0.5;
+        }
 
         .curtain {
             position: fixed; top: 0; height: 100vh; width: 50%; z-index: 2000;
@@ -42,145 +72,158 @@
             background: repeating-linear-gradient(90deg, var(--c-shadow) 0%, var(--c-base) 10%, var(--c-light) 20%, var(--c-base) 30%, var(--c-shadow) 40%);
             background-size: 200px 100%; box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
         }
-
         .curtain.left { left: 0; transform-origin: left; border-right: 2px solid rgba(0,0,0,0.5); }
         .curtain.right { right: 0; transform-origin: right; border-left: 2px solid rgba(0,0,0,0.5); background-position: -100px 0; }
-
         body.open .curtain.left { transform: translateX(-95%); }
         body.open .curtain.right { transform: translateX(95%); }
 
         /* --- ЗАГРУЗКА --- */
-        #preloader {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3000;
-            display: flex; flex-direction: column; align-items: center; pointer-events: none; transition: opacity 0.8s ease;
-        }
+        #preloader { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3000; display: flex; flex-direction: column; align-items: center; pointer-events: none; transition: opacity 0.8s ease; }
         body.open #preloader { opacity: 0; }
-        .loader-ring {
-            width: 80px; height: 80px; border: 3px solid rgba(189, 0, 255, 0.1); border-top: 3px solid var(--primary);
-            border-right: 3px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite;
-            box-shadow: 0 0 40px rgba(189, 0, 255, 0.5); margin-bottom: 20px; backdrop-filter: blur(4px);
-        }
+        .loader-ring { width: 80px; height: 80px; border: 3px solid rgba(189, 0, 255, 0.1); border-top: 3px solid var(--primary); border-right: 3px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; box-shadow: 0 0 40px rgba(189, 0, 255, 0.5); margin-bottom: 20px; backdrop-filter: blur(4px); }
         .loader-text { font-weight: 800; letter-spacing: 3px; text-transform: uppercase; font-size: 0.8rem; text-shadow: 0 0 15px var(--primary); }
 
-        /* --- СЦЕНА --- */
-        .stage-container {
-            position: relative; z-index: 10;
-            display: flex; flex-direction: column; align-items: center;
-            padding-top: 120px; opacity: 0; transition: opacity 1.5s ease 1s;
-            /* Отступ справа, чтобы не перекрывать маскота */
-            padding-right: 150px; 
+        /* --- МАСКОТ (Уменьшен и аккуратен) --- */
+        .mascot-img {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            height: 350px; /* Было 60vh, стало фиксировано и меньше */
+            max-height: 40vh; /* Чтобы на ноутбуках не был огромным */
+            z-index: 10;
+            pointer-events: none;
+            filter: drop-shadow(0 0 20px rgba(0, 255, 242, 0.2)); /* Ледяная тень */
+            transform: translateX(100%);
+            transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.5s;
+            mask-image: linear-gradient(to top, black 80%, transparent 100%); /* Плавное исчезновение снизу, если картинка обрезана */
         }
+        body.open .mascot-img { transform: translateX(0); }
+
+        /* --- СЦЕНА --- */
+        .stage-container { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; padding-top: 120px; opacity: 0; transition: opacity 1.5s ease 1s; padding-right: 100px; }
         body.open .stage-container { opacity: 1; }
 
         h1 {
             font-size: 4rem; text-transform: uppercase; font-weight: 900; letter-spacing: 4px; margin-bottom: 40px;
-            background: linear-gradient(180deg, #fff 30%, #a0a0a0 100%);
+            /* Зимний градиент текста */
+            background: linear-gradient(180deg, #fff 40%, #a0e6ff 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(189, 0, 255, 0.4);
+            text-shadow: 0 0 30px rgba(0, 255, 242, 0.5);
         }
 
-        /* --- ИНФО-ПАНЕЛЬ --- */
+        /* --- ИНФО-ПАНЕЛЬ (Стекло) --- */
         .info-sidebar {
             position: fixed; left: 70px; top: 150px; width: 220px;
-            background: rgba(10, 5, 20, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 15px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: rgba(10, 20, 40, 0.6); /* Темно-синий подтон */
+            backdrop-filter: blur(15px); 
+            border: 1px solid rgba(160, 230, 255, 0.2); /* Ледяная рамка */
+            border-radius: 15px; padding: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             transform: translateX(-200%); transition: transform 1s ease 2s; z-index: 100;
         }
         body.open .info-sidebar { transform: translateX(0); }
-
-        .info-title { color: #00ffea; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
-        .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; color: #ddd; }
+        
+        .info-title { color: #00ffea; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; text-shadow: 0 0 10px #00ffea;}
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; color: #b0cfff; }
         .info-row b { color: #fff; }
-        .info-row.highlight { color: var(--primary); text-shadow: 0 0 10px rgba(189,0,255,0.5); font-weight: bold; }
-
-        /* --- МАСКОТ --- */
-        .mascot-img {
-            position: fixed;
-            bottom: -10px;
-            right: -20px;
-            height: 60vh; /* Высота 60% от экрана */
-            max-height: 600px;
-            z-index: 1500; /* Под шторами, но над сайтом */
-            pointer-events: none;
-            filter: drop-shadow(0 0 20px rgba(189, 0, 255, 0.3));
-            transform: translateX(100%);
-            transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1s; /* Выезжает с задержкой */
-        }
-        body.open .mascot-img {
-            transform: translateX(0);
-        }
+        .info-row.highlight { color: #fff; text-shadow: 0 0 15px #00ffea; font-weight: bold; }
 
         /* --- СЕТКА --- */
-        .grid {
-            display: flex; flex-wrap: wrap; justify-content: center;
-            gap: 25px; width: 80%; max-width: 1000px; margin-left: 100px;
-        }
+        .grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; width: 85%; max-width: 1100px; margin-left: 100px; }
 
         .card {
-            width: 240px; background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px;
-            padding: 25px 20px; display: flex; flex-direction: column; align-items: center; position: relative;
+            width: 240px; 
+            background: var(--card-bg); 
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--frost); /* Морозная рамка */
+            border-radius: 20px; padding: 25px 20px;
+            display: flex; flex-direction: column; align-items: center; position: relative;
             transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
             transform: translateZ(0); backface-visibility: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-        .card:hover { transform: translateY(-8px) scale(1.02); border-color: var(--primary); box-shadow: 0 20px 50px rgba(189, 0, 255, 0.2); background: rgba(40, 20, 60, 0.8); z-index: 100; }
+        /* Ховер эффект - зимнее свечение */
+        .card:hover {
+            transform: translateY(-8px) scale(1.02); 
+            border-color: var(--accent);
+            box-shadow: 0 10px 40px rgba(0, 255, 242, 0.25); 
+            background: rgba(20, 30, 60, 0.8); 
+            z-index: 100;
+        }
 
         .queue-badge {
-            position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px; padding: 2px 8px; font-size: 0.8rem; color: #888; z-index: 10;
+            position: absolute; top: 10px; left: 10px; 
+            background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; padding: 2px 8px; font-size: 0.8rem; color: #a0c0ff; z-index: 10;
         }
-        .card.leader .queue-badge { background: var(--primary); color: white; border: none; font-weight: bold; }
+        .card.leader .queue-badge { background: linear-gradient(45deg, #bd00ff, #00ffea); color: white; border: none; font-weight: bold; box-shadow: 0 0 10px rgba(189,0,255,0.5); }
 
-        .avatar-container {
-            width: 80px; height: 80px; margin-bottom: 12px; position: relative; border-radius: 50%;
-            background: linear-gradient(135deg, #6a00ff, #bd00ff); border: 3px solid rgba(255,255,255,0.1);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; overflow: hidden;
-        }
+        .avatar-container { width: 80px; height: 80px; margin-bottom: 12px; position: relative; border-radius: 50%; background: linear-gradient(135deg, #4a00e0, #8e2de2); border: 3px solid rgba(255,255,255,0.2); box-shadow: 0 5px 15px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .avatar-img { width: 100%; height: 100%; object-fit: cover; }
         .avatar-fallback { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; color: white; position: absolute; top: 0; left: 0; background: linear-gradient(135deg, #6a00ff, #bd00ff); }
         
-        .nickname { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; }
-        .score-pill { background: rgba(0, 0, 0, 0.6); padding: 5px 15px; border-radius: 30px; font-size: 0.9rem; color: #ddd; border: 1px solid rgba(255, 255, 255, 0.05); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-        .dot { width: 6px; height: 6px; background-color: #00ff88; border-radius: 50%; box-shadow: 0 0 6px #00ff88; }
-        .reward { font-size: 1rem; color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; text-shadow: 0 0 10px rgba(217, 102, 255, 0.3); display: flex; align-items: center; gap: 6px; }
+        .nickname { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        
+        .score-pill { background: rgba(0, 0, 0, 0.6); padding: 5px 15px; border-radius: 30px; font-size: 0.9rem; color: #ddeeff; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+        .dot { width: 6px; height: 6px; background-color: #00ffea; border-radius: 50%; box-shadow: 0 0 6px #00ffea; }
+        
+        .reward { font-size: 1rem; color: #ffeb3b; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; text-shadow: 0 0 15px rgba(255, 235, 59, 0.4); display: flex; align-items: center; gap: 6px; }
         
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-
-    <!-- Шторы -->
     <div class="curtain-top"></div>
     <div class="curtain left"></div>
     <div class="curtain right"></div>
-    
-    <!-- Загрузка -->
     <div id="preloader"><div class="loader-ring"></div><div class="loader-text">Loading...</div></div>
 
-    <!-- МАСКОТ (Твоя ссылка) -->
-    <img src="https://avatars.mds.yandex.net/i?id=195f476a137aa62aafcbb76291044f48354dce1a-4956265-images-thumbs&n=13" class="mascot-img" alt="Character">
-
-    <!-- Инфо-панель -->
+    <!-- Инфо -->
     <div class="info-sidebar">
-        <div class="info-title">💰 Призовой фонд</div>
+        <div class="info-title">❄️ Призовой фонд</div>
         <div class="info-row"><span>1 Раунд:</span> <b>10.000</b></div>
         <div class="info-row"><span>2 Раунда:</span> <b>50.000</b></div>
         <div class="info-row"><span>3 Раунда:</span> <b>100.000</b></div>
         <div class="info-row highlight"><span>4 Раунда:</span> <b>500.000</b></div>
     </div>
 
-    <!-- Сцена -->
+    <!-- МАСКОТ (Уменьшен и в углу) -->
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYz6RRDd_6j4hGRPM4n-PxEhQYRiAtBGNM9g&s" class="mascot-img" alt="Mascot">
+
+    <!-- СЦЕНА -->
     <div class="stage-container">
         <h1>LoliComedy</h1>
         <div class="grid" id="grid">Загрузка данных...</div>
     </div>
+
+    <!-- СНЕГ (Скрипт генерации) -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const snowCount = 50; // Количество снежинок
+            const body = document.body;
+            
+            for(let i=0; i<snowCount; i++) {
+                const snow = document.createElement('div');
+                snow.className = 'snowflake';
+                snow.innerHTML = '❄'; // Можно поменять на точку • для реализма
+                snow.style.left = Math.random() * 100 + 'vw';
+                snow.style.animationDuration = (Math.random() * 5 + 3) + 's'; // Разная скорость
+                snow.style.opacity = Math.random();
+                snow.style.fontSize = (Math.random() * 10 + 10) + 'px';
+                
+                // Случайная задержка, чтобы снег не падал стеной
+                snow.style.animationDelay = Math.random() * 5 + 's';
+                
+                body.appendChild(snow);
+            }
+        });
+    </script>
 
     <!-- FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // ТВОИ КЛЮЧИ
         const firebaseConfig = {
             apiKey: "AIzaSyDhMA1jiefu1qCNyXwthGJC021t6VFjhDw",
             authDomain: "loli-event.firebaseapp.com",
@@ -234,7 +277,7 @@
             const grid = document.getElementById('grid');
 
             if (data.length === 0) {
-                grid.innerHTML = '<div style="color: #666; font-size:1.2rem; margin-top:50px;">Ожидание участников...</div>';
+                grid.innerHTML = '<div style="color: #88aaff; font-size:1.2rem; margin-top:50px;">Ожидание участников... ❄️</div>';
                 return;
             }
 
@@ -248,7 +291,10 @@
             data.forEach((p, index) => {
                 const isLeader = p.rounds > 0;
                 const isWinner = p.rounds >= 4;
-                let glowColor = isWinner ? '#ffd700' : 'var(--primary)';
+                
+                // Золото для победителя, иначе Циан (Лед)
+                let glowColor = isWinner ? '#ffd700' : 'var(--accent)';
+                
                 const activeGlow = isLeader ? `border-color: ${glowColor}; box-shadow: 0 0 25px ${glowColor};` : '';
                 const dotColor = isLeader ? '#00ffea' : '#555';
                 const queueClass = isLeader ? 'leader' : '';
