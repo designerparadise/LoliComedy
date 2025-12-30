@@ -25,7 +25,30 @@
             min-height: 100vh;
         }
 
-        /* --- ГИРЛЯНДА СО СНЕЖИНКАМИ --- */
+        /* --- ПРОЖЕКТОРА (Мягкие) --- */
+        .spotlight-group {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            pointer-events: none; z-index: 2; /* Поверх фона, но ПОД карточками */
+            overflow: hidden;
+        }
+        .spotlight {
+            position: absolute; top: -20%; width: 15%; height: 150%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, rgba(189, 0, 255, 0.1) 30%, transparent 80%);
+            filter: blur(35px); transform-origin: top center; mix-blend-mode: screen;
+        }
+        .spotlight.left { left: 15%; animation: spot-sway-left 8s ease-in-out infinite alternate; }
+        .spotlight.right { right: 15%; animation: spot-sway-right 9s ease-in-out infinite alternate; }
+        .spotlight.center {
+            left: 42.5%; width: 15%;
+            background: linear-gradient(to bottom, rgba(0, 255, 234, 0.08) 0%, transparent 70%);
+            animation: spot-pulse 5s ease-in-out infinite alternate;
+        }
+
+        @keyframes spot-sway-left { 0% { transform: rotate(15deg) translateX(0); opacity: 0.4; } 100% { transform: rotate(25deg) translateX(-20px); opacity: 0.7; } }
+        @keyframes spot-sway-right { 0% { transform: rotate(-15deg) translateX(0); opacity: 0.4; } 100% { transform: rotate(-25deg) translateX(20px); opacity: 0.7; } }
+        @keyframes spot-pulse { 0% { transform: scaleX(1); opacity: 0.3; } 100% { transform: scaleX(1.2); opacity: 0.5; } }
+
+        /* --- ГИРЛЯНДА --- */
         .light-rope {
             text-align: center; white-space: nowrap; overflow: hidden;
             position: fixed; z-index: 3000; margin: -15px 0 0 0; padding: 0;
@@ -37,39 +60,27 @@
             width: 12px; height: 22px; border-radius: 50%; margin: 20px;
             background: #fff; opacity: 0.5; animation-name: flash; animation-duration: 2s;
         }
-        /* Провод */
-        .light-rope li:before {
-            content: ""; position: absolute; background: transparent; width: 50px; height: 10px;
-            border-bottom: solid #333 1px; border-radius: 50%; top: -10px; left: -25px;
-        }
-        /* Цоколь лампочки */
-        .light-rope li:after {
-            content: ""; position: absolute; top: -3px; left: 0px; width: 12px; height: 6px;
-            background: #222; border-radius: 2px;
-        }
+        .light-rope li:before { content: ""; position: absolute; background: transparent; width: 50px; height: 10px; border-bottom: solid #333 1px; border-radius: 50%; top: -10px; left: -25px; }
+        .light-rope li:after { content: ""; position: absolute; top: -3px; left: 0px; width: 12px; height: 6px; background: #222; border-radius: 2px; }
         
         .light-rope li:nth-child(odd) { background: #00ffea; box-shadow: 0px 2px 20px 2px #00ffea; animation-duration: 1.8s; }
         .light-rope li:nth-child(2n+1) { background: #bd00ff; box-shadow: 0px 2px 20px 2px #bd00ff; animation-duration: 2.5s; }
         .light-rope li:nth-child(3n+1) { background: #ff0055; box-shadow: 0px 2px 20px 2px #ff0055; animation-duration: 1.2s; }
         .light-rope li:nth-child(4n+1) { background: #ffeb3b; box-shadow: 0px 2px 20px 2px #ffeb3b; animation-duration: 2.2s; }
 
-        /* --- СТИЛИ ДЛЯ СНЕЖИНОК В ГИРЛЯНДЕ --- */
+        /* Снежинки в гирлянде */
         .light-rope li.flake {
-            background: transparent; box-shadow: none;
-            width: 20px; height: 20px;
-            font-size: 24px; color: white;
-            top: 5px; /* Чуть ниже провода */
+            background: transparent; box-shadow: none; width: 20px; height: 20px;
+            font-size: 24px; color: white; top: 5px;
             display: flex; justify-content: center; align-items: center;
             text-shadow: 0 0 10px #fff, 0 0 20px #00ffea;
             animation: swing 3s ease-in-out infinite alternate;
         }
-        .light-rope li.flake:after { display: none; } /* Убираем цоколь у снежинки */
-        /* Оставляем провод (:before) для снежинок, чтобы цепь не рвалась */
-
+        .light-rope li.flake:after { display: none; }
         @keyframes flash { 0%, 100% { opacity: 1; transform: scale(1.1); } 50% { opacity: 0.4; transform: scale(0.9); } }
         @keyframes swing { 0% { transform: rotate(-10deg); } 100% { transform: rotate(10deg); } }
 
-        /* --- СНЕГ (ФОНОВЫЙ) --- */
+        /* --- СНЕГ (Фон) --- */
         .snowflake {
             position: fixed; top: -10px; color: white; font-size: 1em; text-shadow: 0 0 5px #000; z-index: 1; 
             user-select: none; cursor: default; animation-name: snowfall; animation-timing-function: linear; 
@@ -83,8 +94,7 @@
             background: linear-gradient(180deg, var(--c-shadow) 0%, var(--c-base) 60%, var(--c-shadow) 100%);
             mask-image: radial-gradient(circle at 50% 120%, transparent 40%, black 41%);
             -webkit-mask-image: radial-gradient(circle at 50% 120%, transparent 40%, black 41%);
-            mask-size: 40px 100%; -webkit-mask-size: 40px 100%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8); pointer-events: none;
+            mask-size: 40px 100%; -webkit-mask-size: 40px 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.8); pointer-events: none;
         }
         .curtain {
             position: fixed; top: 0; height: 100vh; width: 50%; z-index: 2000;
@@ -157,47 +167,34 @@
         
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- СКРЫТЫЙ МОПС (ПАСХАЛКА) --- */
+        /* --- МОПС (ПАСХАЛКА) --- */
         .secret-pug {
-            position: fixed;
-            bottom: -50px; /* Скрываем большую часть */
-            left: 20px;
-            width: 80px; height: 80px;
-            z-index: 2500; /* Поверх штор */
-            cursor: pointer;
+            position: fixed; bottom: -50px; left: 20px; width: 80px; height: 80px;
+            z-index: 2500; cursor: pointer;
             transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
         }
-        .secret-pug:hover { bottom: -10px; /* Выглядывает при наведении */ }
+        .secret-pug:hover { bottom: -10px; }
         .secret-pug img { width: 100%; height: auto; border-radius: 50%; transform: rotate(10deg); }
 
-        /* --- МОДАЛЬНОЕ ОКНО С МОПСОМ --- */
         .pug-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 9999;
+            background: rgba(0, 0, 0, 0.9); z-index: 9999;
             display: flex; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none;
-            transition: opacity 0.4s ease;
-            backdrop-filter: blur(5px);
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease; backdrop-filter: blur(5px);
         }
         .pug-modal.active { opacity: 1; pointer-events: all; }
-        
         .pug-full-img {
-            max-width: 90vw; max-height: 80vh;
-            border-radius: 15px;
+            max-width: 90vw; max-height: 80vh; border-radius: 15px;
             box-shadow: 0 0 50px rgba(189, 0, 255, 0.5);
             animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        @keyframes popIn { 0% { transform: scale(0.5); } 100% { transform: scale(1); } }
-
         .close-btn {
             position: absolute; top: 30px; right: 30px;
-            color: #fff; font-size: 3rem; cursor: pointer;
-            text-shadow: 0 0 10px #000;
-            transition: transform 0.2s;
+            color: #fff; font-size: 3rem; cursor: pointer; text-shadow: 0 0 10px #000; transition: transform 0.2s;
         }
         .close-btn:hover { transform: scale(1.2) rotate(90deg); color: var(--accent); }
+        @keyframes popIn { 0% { transform: scale(0.5); } 100% { transform: scale(1); } }
 
         /* АДАПТАЦИЯ */
         @media (max-width: 768px) {
@@ -208,16 +205,23 @@
             .grid { margin-left: 0; width: 100%; padding: 0 10px; gap: 15px; }
             .card { width: 45%; min-width: 140px; padding: 15px 10px; }
             .avatar-container { width: 60px; height: 60px; }
-            .secret-pug { left: 10px; bottom: -40px; width: 60px; height: 60px; } /* Чуть меньше на телефоне */
+            .secret-pug { left: 10px; bottom: -40px; width: 60px; height: 60px; }
+            .spotlight { opacity: 0.3 !important; width: 40%; filter: blur(50px); } /* Тусклее на телефоне */
+            .spotlight.center { display: none; }
         }
     </style>
 </head>
 <body>
     
+    <!-- ПРОЖЕКТОРА -->
+    <div class="spotlight-group">
+        <div class="spotlight left"></div>
+        <div class="spotlight right"></div>
+        <div class="spotlight center"></div>
+    </div>
+
     <!-- ГИРЛЯНДА СО СНЕЖИНКАМИ -->
-    <!-- Чередуем лампочки и класс flake (снежинки) -->
     <ul class="light-rope">
-        <li></li><li class="flake">❄</li>
         <li></li><li class="flake">❄</li>
         <li></li><li class="flake">❄</li>
         <li></li><li class="flake">❄</li>
@@ -254,17 +258,16 @@
 
     <!-- ПАСХАЛКА: СКРЫТЫЙ МОПС -->
     <div class="secret-pug" onclick="openPug()">
-        <!-- Используем часть картинки (например, обрежем в css, но здесь просто картинка) -->
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrhAkPq6l8h_GTZ0NAgs1UOypgqXptArLplg&s" alt="Pug Peek">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrhAkPq6l8h_GTZ0NAgs1UOypgqXptArLplg&s" alt="Pug">
     </div>
 
     <!-- МОДАЛЬНОЕ ОКНО С МОПСОМ -->
     <div class="pug-modal" id="pugModal">
         <div class="close-btn" onclick="closePug()">&times;</div>
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrhAkPq6l8h_GTZ0NAgs1UOypgqXptArLplg&s" class="pug-full-img" alt="Full Pug">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrhAkPq6l8h_GTZ0NAgs1UOypgqXptArLplg&s" class="pug-full-img" alt="Pug">
     </div>
 
-    <!-- СНЕГ -->
+    <!-- СНЕГ (СКРИПТ) -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const snowCount = 30; 
@@ -282,13 +285,8 @@
             }
         });
 
-        // ЛОГИКА МОПСА
-        function openPug() {
-            document.getElementById('pugModal').classList.add('active');
-        }
-        function closePug() {
-            document.getElementById('pugModal').classList.remove('active');
-        }
+        function openPug() { document.getElementById('pugModal').classList.add('active'); }
+        function closePug() { document.getElementById('pugModal').classList.remove('active'); }
     </script>
 
     <!-- FIREBASE -->
@@ -330,35 +328,25 @@
         const playersRef = ref(db, 'players');
         onValue(playersRef, (snapshot) => {
             const dataObj = snapshot.val();
-            
-            if (!dataObj) {
-                render([]);
-                return;
-            }
-
+            if (!dataObj) { render([]); return; }
             const data = Object.values(dataObj);
             const currentDataState = JSON.stringify(data);
             if (currentDataState === lastDataState) return;
             lastDataState = currentDataState;
-
             render(data);
         });
 
         function render(data) {
             const grid = document.getElementById('grid');
-
             if (data.length === 0) {
                 grid.innerHTML = '<div style="color: #88aaff; font-size:1.2rem; margin-top:50px;">Ожидание участников...</div>';
                 return;
             }
-
             data.sort((a, b) => {
                 if (b.rounds !== a.rounds) return b.rounds - a.rounds;
                 return a.id - b.id;
             });
-
             let html = '';
-            
             data.forEach((p, index) => {
                 const isLeader = p.rounds > 0;
                 const isWinner = p.rounds >= 4;
@@ -367,13 +355,9 @@
                 const dotColor = isLeader ? '#00ffea' : '#555'; 
                 const queueClass = isLeader ? 'leader' : '';
                 const badgeText = isLeader ? `TOP #${index + 1}` : `Queue #${index + 1}`;
-
-                let avatarHtml = '';
-                if (p.avatar && p.avatar.trim() !== '') {
-                    avatarHtml = `<img src="${p.avatar}" class="avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"><div class="avatar-fallback" style="display:none">${p.name.charAt(0)}</div>`;
-                } else {
-                    avatarHtml = `<div class="avatar-fallback">${p.name.charAt(0)}</div>`;
-                }
+                let avatarHtml = p.avatar && p.avatar.trim() !== '' 
+                    ? `<img src="${p.avatar}" class="avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"><div class="avatar-fallback" style="display:none">${p.name.charAt(0)}</div>`
+                    : `<div class="avatar-fallback">${p.name.charAt(0)}</div>`;
 
                 html += `
                 <div class="card ${queueClass}" style="${activeGlow}">
@@ -385,10 +369,8 @@
                         Раунды: <b style="color:white; margin-left:4px;">${p.rounds}</b>
                     </div>
                     <div class="reward">${getReward(p.rounds)}</div>
-                </div>
-                `;
+                </div>`;
             });
-
             grid.innerHTML = html;
         }
     </script>
