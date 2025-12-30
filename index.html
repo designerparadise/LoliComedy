@@ -9,6 +9,7 @@
             --accent: #d966ff;
             --bg-dark: #05020a;
             --card-bg: rgba(20, 10, 30, 0.75);
+            
             /* Цвета штор */
             --c-shadow: #140024;
             --c-base: #250040;
@@ -25,13 +26,13 @@
             min-height: 100vh;
         }
 
-        /* --- НОВАЯ РЕАЛИСТИЧНАЯ ГИРЛЯНДА --- */
+        /* --- ГИРЛЯНДА (PREMIUM STYLE) --- */
         .light-rope {
             text-align: center;
             white-space: nowrap;
             overflow: hidden;
             position: fixed;
-            z-index: 3000; /* Поверх всего */
+            z-index: 3000;
             margin: -15px 0 0 0;
             padding: 0;
             pointer-events: none;
@@ -49,90 +50,80 @@
             padding: 0;
             display: block;
             width: 12px;
-            height: 28px;
+            height: 22px;
             border-radius: 50%;
             margin: 20px;
-            background: rgba(0, 255, 255, 1);
-            box-shadow: 0px 5px 24px 3px rgba(0, 255, 255, 1);
-            animation-name: flash-1;
+            background: #fff;
+            opacity: 0.5;
+            animation-name: flash;
             animation-duration: 2s;
         }
 
-        /* Провод (изогнутая дуга) */
+        /* Провод (Тонкая дуга) */
         .light-rope li:before {
             content: "";
             position: absolute;
             background: transparent;
-            width: 52px;
+            width: 50px;
             height: 10px;
-            border-bottom: solid #222 2px; /* Цвет провода */
+            border-bottom: solid #333 1px; /* Очень тонкий провод */
             border-radius: 50%;
-            top: -8px;
-            left: -28px;
+            top: -10px;
+            left: -25px;
         }
 
-        /* Цоколь лампочки */
+        /* Цоколь (Крепление) */
         .light-rope li:after {
             content: "";
             position: absolute;
-            top: -4px;
-            left: 0;
+            top: -3px;
+            left: 0px;
             width: 12px;
-            height: 4px;
-            background: #111;
+            height: 6px;
+            background: #222;
             border-radius: 2px;
         }
 
-        /* --- ЦВЕТА И АНИМАЦИИ --- */
-        
-        /* 1. Токсик (Зеленый) */
-        .light-rope li:nth-child(5n+1) {
-            background: #00ff22;
-            box-shadow: 0px 5px 24px 3px rgba(0, 255, 34, 0.5);
-            animation-name: flash-1;
+        /* ЦВЕТА И СВЕЧЕНИЕ */
+        .light-rope li:nth-child(odd) {
+            background: #00ffea;
+            box-shadow: 0px 2px 20px 2px #00ffea;
+            animation-duration: 1.8s;
+        }
+        .light-rope li:nth-child(2n+1) {
+            background: #bd00ff;
+            box-shadow: 0px 2px 20px 2px #bd00ff;
             animation-duration: 2.5s;
         }
-        /* 2. Циан (Синий) */
-        .light-rope li:nth-child(5n+2) {
-            background: #00eaff;
-            box-shadow: 0px 5px 24px 3px rgba(0, 234, 255, 0.5);
-            animation-name: flash-2;
-            animation-duration: 3s;
-        }
-        /* 3. Лоли (Розовый/Фиолетовый) */
-        .light-rope li:nth-child(5n+3) {
-            background: #bd00ff;
-            box-shadow: 0px 5px 24px 3px rgba(189, 0, 255, 0.5);
-            animation-name: flash-3;
-            animation-duration: 1.5s;
-        }
-        /* 4. Огонь (Красный) */
-        .light-rope li:nth-child(5n+4) {
+        .light-rope li:nth-child(3n+1) {
             background: #ff0055;
-            box-shadow: 0px 5px 24px 3px rgba(255, 0, 85, 0.5);
-            animation-name: flash-1;
-            animation-duration: 3.5s;
+            box-shadow: 0px 2px 20px 2px #ff0055;
+            animation-duration: 1.2s;
         }
-        /* 5. Золото (Желтый) */
-        .light-rope li:nth-child(5n+5) {
+        .light-rope li:nth-child(4n+1) {
             background: #ffeb3b;
-            box-shadow: 0px 5px 24px 3px rgba(255, 235, 59, 0.5);
-            animation-name: flash-2;
-            animation-duration: 2s;
+            box-shadow: 0px 2px 20px 2px #ffeb3b;
+            animation-duration: 2.2s;
         }
 
-        @keyframes flash-1 { 
-            0%, 100% { opacity: 1; transform:translateY(0); } 
-            50% { opacity: 0.4; transform:translateY(1px); } 
+        @keyframes flash {
+            0%, 100% { opacity: 1; transform: scale(1.1); }
+            50% { opacity: 0.4; transform: scale(0.9); }
         }
-        @keyframes flash-2 { 
-            0%, 100% { opacity: 0.4; transform:translateY(1px); } 
-            50% { opacity: 1; transform:translateY(0); } 
+
+        /* --- МАСКОТ (Уменьшенный) --- */
+        .mascot-img {
+            position: fixed;
+            bottom: -5px; /* Чуть утоплен вниз */
+            right: -10px; /* Чуть утоплен вправо */
+            height: 250px; /* Фиксированная небольшая высота */
+            z-index: 10;
+            pointer-events: none;
+            filter: drop-shadow(0 0 15px rgba(189, 0, 255, 0.4));
+            transform: translateX(100%);
+            transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.5s;
         }
-        @keyframes flash-3 { 
-            0%, 100% { opacity: 1; box-shadow: 0px 5px 24px 3px currentColor; } 
-            50% { opacity: 0.8; box-shadow: 0px 2px 10px 1px currentColor; } 
-        }
+        body.open .mascot-img { transform: translateX(0); }
 
         /* --- СНЕГ --- */
         .snowflake {
@@ -169,22 +160,6 @@
         body.open #preloader { opacity: 0; }
         .loader-ring { width: 80px; height: 80px; border: 3px solid rgba(189, 0, 255, 0.1); border-top: 3px solid var(--primary); border-right: 3px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; box-shadow: 0 0 40px rgba(189, 0, 255, 0.5); margin-bottom: 20px; backdrop-filter: blur(4px); }
         .loader-text { font-weight: 800; letter-spacing: 3px; text-transform: uppercase; font-size: 0.8rem; text-shadow: 0 0 15px var(--primary); }
-
-        /* --- МАСКОТ --- */
-        .mascot-img {
-            position: fixed;
-            bottom: 0;
-            right: 0;
-            height: 350px;
-            max-height: 40vh;
-            z-index: 10;
-            pointer-events: none;
-            filter: drop-shadow(0 0 20px rgba(189, 0, 255, 0.3));
-            transform: translateX(100%);
-            transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.5s;
-            mask-image: linear-gradient(to top, black 80%, transparent 100%);
-        }
-        body.open .mascot-img { transform: translateX(0); }
 
         /* --- СЦЕНА --- */
         .stage-container { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; padding-top: 120px; opacity: 0; transition: opacity 1.5s ease 1s; padding-right: 100px; }
@@ -249,7 +224,7 @@
 </head>
 <body>
     
-    <!-- ГИРЛЯНДА (Разноцветная) -->
+    <!-- ГИРЛЯНДА (Красивая) -->
     <ul class="light-rope">
         <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
     </ul>
@@ -268,8 +243,8 @@
         <div class="info-row highlight"><span>4 Раунда:</span> <b>500.000</b></div>
     </div>
 
-    <!-- МАСКОТ -->
-    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrhAkPq6l8h_GTZ0NAgs1UOypgqXptArLplg&s" class="mascot-img" alt="Mascot">
+    <!-- МАСКОТ (Вставь сюда свою ссылку на мопса или девочку) -->
+    <img src="https://i.ibb.co/RCLfB9Y/mascot.png" class="mascot-img" alt="Mascot" onerror="this.style.display='none'">
 
     <!-- СЦЕНА -->
     <div class="stage-container">
@@ -369,6 +344,7 @@
                 const isLeader = p.rounds > 0;
                 const isWinner = p.rounds >= 4;
                 
+                // Золото для победителя, иначе Фиолетовый
                 let glowColor = isWinner ? '#ffd700' : 'var(--primary)';
                 
                 const activeGlow = isLeader ? `border-color: ${glowColor}; box-shadow: 0 0 25px ${glowColor};` : '';
