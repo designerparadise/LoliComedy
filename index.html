@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Важно для мобилок -->
     <title>LoliComedy Event</title>
     <style>
         :root {
@@ -9,374 +10,357 @@
             --accent: #d966ff;
             --bg-dark: #05020a;
             --card-bg: rgba(20, 10, 30, 0.75);
-code
-Code
-/* Цвета штор */
-        --c-shadow: #140024;
-        --c-base: #250040;
-        --c-light: #440075;
-    }
-
-    body {
-        margin: 0; padding: 0;
-        background-color: var(--bg-dark);
-        background-image: radial-gradient(circle at 60% 0%, #2a0045 0%, #07030f 70%);
-        font-family: 'Segoe UI', Roboto, sans-serif;
-        color: #fff;
-        overflow-x: hidden;
-        min-height: 100vh;
-    }
-
-    /* --- ГИРЛЯНДА (PREMIUM STYLE) --- */
-    .light-rope {
-        text-align: center;
-        white-space: nowrap;
-        overflow: hidden;
-        position: fixed;
-        z-index: 3000;
-        margin: -15px 0 0 0;
-        padding: 0;
-        pointer-events: none;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
-
-    .light-rope li {
-        position: relative;
-        animation-fill-mode: both;
-        animation-iteration-count: infinite;
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: block;
-        width: 12px;
-        height: 22px;
-        border-radius: 50%;
-        margin: 20px;
-        background: #fff;
-        opacity: 0.5;
-        animation-name: flash;
-        animation-duration: 2s;
-    }
-
-    /* Провод (Тонкая дуга) */
-    .light-rope li:before {
-        content: "";
-        position: absolute;
-        background: transparent;
-        width: 50px;
-        height: 10px;
-        border-bottom: solid #333 1px; /* Очень тонкий провод */
-        border-radius: 50%;
-        top: -10px;
-        left: -25px;
-    }
-
-    /* Цоколь (Крепление) */
-    .light-rope li:after {
-        content: "";
-        position: absolute;
-        top: -3px;
-        left: 0px;
-        width: 12px;
-        height: 6px;
-        background: #222;
-        border-radius: 2px;
-    }
-
-    /* ЦВЕТА И СВЕЧЕНИЕ */
-    .light-rope li:nth-child(odd) {
-        background: #00ffea;
-        box-shadow: 0px 2px 20px 2px #00ffea;
-        animation-duration: 1.8s;
-    }
-    .light-rope li:nth-child(2n+1) {
-        background: #bd00ff;
-        box-shadow: 0px 2px 20px 2px #bd00ff;
-        animation-duration: 2.5s;
-    }
-    .light-rope li:nth-child(3n+1) {
-        background: #ff0055;
-        box-shadow: 0px 2px 20px 2px #ff0055;
-        animation-duration: 1.2s;
-    }
-    .light-rope li:nth-child(4n+1) {
-        background: #ffeb3b;
-        box-shadow: 0px 2px 20px 2px #ffeb3b;
-        animation-duration: 2.2s;
-    }
-
-    @keyframes flash {
-        0%, 100% { opacity: 1; transform: scale(1.1); }
-        50% { opacity: 0.4; transform: scale(0.9); }
-    }
-
-    /* --- МАСКОТ (Уменьшенный) --- */
-    .mascot-img {
-        position: fixed;
-        bottom: -5px; /* Чуть утоплен вниз */
-        right: -10px; /* Чуть утоплен вправо */
-        height: 250px; /* Фиксированная небольшая высота */
-        z-index: 10;
-        pointer-events: none;
-        filter: drop-shadow(0 0 15px rgba(189, 0, 255, 0.4));
-        transform: translateX(100%);
-        transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.5s;
-    }
-    body.open .mascot-img { transform: translateX(0); }
-
-    /* --- СНЕГ --- */
-    .snowflake {
-        position: fixed; top: -10px; color: white; font-size: 1em; text-shadow: 0 0 5px #000; z-index: 1; 
-        user-select: none; cursor: default; animation-name: snowfall; animation-timing-function: linear; 
-        animation-iteration-count: infinite; opacity: 0.6;
-    }
-    @keyframes snowfall { 0% { transform: translateY(0); } 100% { transform: translateY(100vh); } }
-
-    /* --- ШТОРЫ --- */
-    .curtain-top {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100px; z-index: 2001;
-        background: linear-gradient(180deg, var(--c-shadow) 0%, var(--c-base) 60%, var(--c-shadow) 100%);
-        mask-image: radial-gradient(circle at 50% 120%, transparent 40%, black 41%);
-        mask-size: 60px 100%; mask-position: bottom;
-        -webkit-mask-image: radial-gradient(circle at 50% 120%, transparent 40%, black 41%);
-        -webkit-mask-size: 60px 100%; -webkit-mask-position: bottom;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.8); pointer-events: none;
-    }
-
-    .curtain {
-        position: fixed; top: 0; height: 100vh; width: 50%; z-index: 2000;
-        transition: transform 2.5s cubic-bezier(0.6, 0.05, 0.2, 1);
-        background: repeating-linear-gradient(90deg, var(--c-shadow) 0%, var(--c-base) 10%, var(--c-light) 20%, var(--c-base) 30%, var(--c-shadow) 40%);
-        background-size: 200px 100%; box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
-    }
-    .curtain.left { left: 0; transform-origin: left; border-right: 2px solid rgba(0,0,0,0.5); }
-    .curtain.right { right: 0; transform-origin: right; border-left: 2px solid rgba(0,0,0,0.5); background-position: -100px 0; }
-    body.open .curtain.left { transform: translateX(-95%); }
-    body.open .curtain.right { transform: translateX(95%); }
-
-    /* --- ЗАГРУЗКА --- */
-    #preloader { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3000; display: flex; flex-direction: column; align-items: center; pointer-events: none; transition: opacity 0.8s ease; }
-    body.open #preloader { opacity: 0; }
-    .loader-ring { width: 80px; height: 80px; border: 3px solid rgba(189, 0, 255, 0.1); border-top: 3px solid var(--primary); border-right: 3px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; box-shadow: 0 0 40px rgba(189, 0, 255, 0.5); margin-bottom: 20px; backdrop-filter: blur(4px); }
-    .loader-text { font-weight: 800; letter-spacing: 3px; text-transform: uppercase; font-size: 0.8rem; text-shadow: 0 0 15px var(--primary); }
-
-    /* --- СЦЕНА --- */
-    .stage-container { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; padding-top: 120px; opacity: 0; transition: opacity 1.5s ease 1s; padding-right: 100px; }
-    body.open .stage-container { opacity: 1; }
-
-    h1 {
-        font-size: 4rem; text-transform: uppercase; font-weight: 900; letter-spacing: 4px; margin-bottom: 40px;
-        background: linear-gradient(180deg, #fff 30%, #bd00ff 100%);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        text-shadow: 0 0 30px rgba(189, 0, 255, 0.5);
-    }
-
-    /* --- ИНФО-ПАНЕЛЬ --- */
-    .info-sidebar {
-        position: fixed; left: 70px; top: 150px; width: 220px;
-        background: rgba(20, 10, 30, 0.6);
-        backdrop-filter: blur(15px); border: 1px solid rgba(189, 0, 255, 0.2);
-        border-radius: 15px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        transform: translateX(-200%); transition: transform 1s ease 2s; z-index: 100;
-    }
-    body.open .info-sidebar { transform: translateX(0); }
-    
-    .info-title { color: var(--accent); font-weight: bold; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; text-shadow: 0 0 10px var(--primary);}
-    .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; color: #ddd; }
-    .info-row b { color: #fff; }
-    .info-row.highlight { color: var(--accent); text-shadow: 0 0 15px var(--primary); font-weight: bold; }
-
-    /* --- СЕТКА --- */
-    .grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; width: 85%; max-width: 1100px; margin-left: 100px; }
-
-    .card {
-        width: 240px; background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(189, 0, 255, 0.1); border-radius: 20px; padding: 25px 20px;
-        display: flex; flex-direction: column; align-items: center; position: relative;
-        transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
-        transform: translateZ(0); backface-visibility: hidden;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
-    .card:hover {
-        transform: translateY(-8px) scale(1.02); border-color: var(--primary);
-        box-shadow: 0 10px 40px rgba(189, 0, 255, 0.3); background: rgba(30, 10, 40, 0.8); z-index: 100;
-    }
-
-    .queue-badge {
-        position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 8px; padding: 2px 8px; font-size: 0.8rem; color: #ccc; z-index: 10;
-    }
-    .card.leader .queue-badge { background: linear-gradient(45deg, #bd00ff, #d966ff); color: white; border: none; font-weight: bold; }
-
-    .avatar-container { width: 80px; height: 80px; margin-bottom: 12px; position: relative; border-radius: 50%; background: linear-gradient(135deg, #6a00ff, #bd00ff); border: 3px solid rgba(255,255,255,0.2); box-shadow: 0 5px 15px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-    .avatar-img { width: 100%; height: 100%; object-fit: cover; }
-    .avatar-fallback { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; color: white; position: absolute; top: 0; left: 0; background: linear-gradient(135deg, #6a00ff, #bd00ff); }
-    
-    .nickname { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
-    .score-pill { background: rgba(0, 0, 0, 0.6); padding: 5px 15px; border-radius: 30px; font-size: 0.9rem; color: #ddd; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-    .dot { width: 6px; height: 6px; background-color: #bd00ff; border-radius: 50%; box-shadow: 0 0 6px #bd00ff; }
-    
-    .reward { font-size: 1rem; color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; text-shadow: 0 0 15px rgba(189, 0, 255, 0.4); display: flex; align-items: center; gap: 6px; }
-    
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-</style>
-</head>
-<body>
-code
-Code
-<!-- ГИРЛЯНДА (Красивая) -->
-<ul class="light-rope">
-    <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
-</ul>
-
-<div class="curtain-top"></div>
-<div class="curtain left"></div>
-<div class="curtain right"></div>
-<div id="preloader"><div class="loader-ring"></div><div class="loader-text">Loading...</div></div>
-
-<!-- Инфо -->
-<div class="info-sidebar">
-    <div class="info-title">💰 Призовой фонд</div>
-    <div class="info-row"><span>1 Раунд:</span> <b>10.000</b></div>
-    <div class="info-row"><span>2 Раунда:</span> <b>50.000</b></div>
-    <div class="info-row"><span>3 Раунда:</span> <b>100.000</b></div>
-    <div class="info-row highlight"><span>4 Раунда:</span> <b>500.000</b></div>
-</div>
-
-<!-- МАСКОТ (Вставь сюда свою ссылку на мопса или девочку) -->
-<img src="https://sobakovod.club/uploads/posts/2022-01/1642164746_1-sobakovod-club-p-sobaki-tolstii-mops-1.jpg" class="mascot-img" alt="Mascot" onerror="this.style.display='none'">
-
-<!-- СЦЕНА -->
-<div class="stage-container">
-    <h1>LoliComedy</h1>
-    <div class="grid" id="grid">Загрузка данных...</div>
-</div>
-
-<!-- СНЕГ -->
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const snowCount = 40; 
-        const body = document.body;
-        for(let i=0; i<snowCount; i++) {
-            const snow = document.createElement('div');
-            snow.className = 'snowflake';
-            snow.innerHTML = '❄';
-            snow.style.left = Math.random() * 100 + 'vw';
-            snow.style.animationDuration = (Math.random() * 5 + 3) + 's';
-            snow.style.opacity = Math.random();
-            snow.style.fontSize = (Math.random() * 10 + 10) + 'px';
-            snow.style.animationDelay = Math.random() * 5 + 's';
-            body.appendChild(snow);
+            --c-shadow: #140024;
+            --c-base: #250040;
+            --c-light: #440075;
         }
-    });
-</script>
 
-<!-- FIREBASE -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 60% 0%, #2a0045 0%, #07030f 70%);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyDhMA1jiefu1qCNyXwthGJC021t6VFjhDw",
-        authDomain: "Loli-event.firebaseapp.com",
-        databaseURL: "https://Loli-event-default-rtdb.firebaseio.com",
-        projectId: "Loli-event",
-        storageBucket: "Loli-event.firebasestorage.app",
-        messagingSenderId: "7525Loli67668",
-        appId: "1:7525Loli67668:web:3e595160cd3db5b79f5e61"
-    };
+        /* --- ГИРЛЯНДА --- */
+        .light-rope {
+            text-align: center; white-space: nowrap; overflow: hidden;
+            position: fixed; z-index: 3000; margin: -15px 0 0 0; padding: 0;
+            pointer-events: none; width: 100%; display: flex; justify-content: center;
+        }
+        .light-rope li {
+            position: relative; animation-fill-mode: both; animation-iteration-count: infinite;
+            list-style: none; margin: 0; padding: 0; display: block;
+            width: 12px; height: 22px; border-radius: 50%; margin: 20px;
+            background: #fff; opacity: 0.5; animation-name: flash; animation-duration: 2s;
+        }
+        .light-rope li:before {
+            content: ""; position: absolute; background: transparent; width: 50px; height: 10px;
+            border-bottom: solid #333 1px; border-radius: 50%; top: -10px; left: -25px;
+        }
+        .light-rope li:after {
+            content: ""; position: absolute; top: -3px; left: 0px; width: 12px; height: 6px;
+            background: #222; border-radius: 2px;
+        }
+        .light-rope li:nth-child(odd) { background: #00ffea; box-shadow: 0px 2px 20px 2px #00ffea; animation-duration: 1.8s; }
+        .light-rope li:nth-child(2n+1) { background: #bd00ff; box-shadow: 0px 2px 20px 2px #bd00ff; animation-duration: 2.5s; }
+        .light-rope li:nth-child(3n+1) { background: #ff0055; box-shadow: 0px 2px 20px 2px #ff0055; animation-duration: 1.2s; }
+        .light-rope li:nth-child(4n+1) { background: #ffeb3b; box-shadow: 0px 2px 20px 2px #ffeb3b; animation-duration: 2.2s; }
+        @keyframes flash { 0%, 100% { opacity: 1; transform: scale(1.1); } 50% { opacity: 0.4; transform: scale(0.9); } }
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+        /* --- МАСКОТ --- */
+        .mascot-img {
+            position: fixed; bottom: -5px; right: -10px; height: 250px; max-height: 40vh;
+            z-index: 10; pointer-events: none;
+            filter: drop-shadow(0 0 15px rgba(189, 0, 255, 0.4));
+            transform: translateX(100%); transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.5s;
+        }
+        body.open .mascot-img { transform: translateX(0); }
 
-    // Старт анимации
-    window.onload = () => {
-        setTimeout(() => {
-            document.body.classList.add('open');
-            setTimeout(() => { document.getElementById('preloader').style.display = 'none'; }, 1000);
-        }, 2000);
-    };
+        /* --- СНЕГ --- */
+        .snowflake {
+            position: fixed; top: -10px; color: white; font-size: 1em; text-shadow: 0 0 5px #000; z-index: 1; 
+            user-select: none; cursor: default; animation-name: snowfall; animation-timing-function: linear; 
+            animation-iteration-count: infinite; opacity: 0.6;
+        }
+        @keyframes snowfall { 0% { transform: translateY(0); } 100% { transform: translateY(100vh); } }
 
-    function getReward(rounds) {
-        if (rounds === 0) return "Ожидание";
-        if (rounds === 1) return "💰 10.000 МОНЕТ";
-        if (rounds === 2) return "💰 50.000 МОНЕТ";
-        if (rounds === 3) return "💰 100.000 МОНЕТ";
-        if (rounds >= 4) return "💰 500.000 МОНЕТ";
-        return "---";
-    }
+        /* --- ШТОРЫ --- */
+        .curtain-top {
+            position: fixed; top: 0; left: 0; width: 100%; height: 80px; z-index: 2001;
+            background: linear-gradient(180deg, var(--c-shadow) 0%, var(--c-base) 60%, var(--c-shadow) 100%);
+            mask-image: radial-gradient(circle at 50% 120%, transparent 40%, black 41%);
+            mask-size: 40px 100%; mask-position: bottom;
+            -webkit-mask-image: radial-gradient(circle at 50% 120%, transparent 40%, black 41%);
+            -webkit-mask-size: 40px 100%; -webkit-mask-position: bottom;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8); pointer-events: none;
+        }
+        .curtain {
+            position: fixed; top: 0; height: 100vh; width: 50%; z-index: 2000;
+            transition: transform 2.5s cubic-bezier(0.6, 0.05, 0.2, 1);
+            background: repeating-linear-gradient(90deg, var(--c-shadow) 0%, var(--c-base) 10%, var(--c-light) 20%, var(--c-base) 30%, var(--c-shadow) 40%);
+            background-size: 200px 100%; box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
+        }
+        .curtain.left { left: 0; transform-origin: left; border-right: 2px solid rgba(0,0,0,0.5); }
+        .curtain.right { right: 0; transform-origin: right; border-left: 2px solid rgba(0,0,0,0.5); background-position: -100px 0; }
+        body.open .curtain.left { transform: translateX(-100%); } /* На телефоне открываем полностью */
+        body.open .curtain.right { transform: translateX(100%); }
 
-    let lastDataState = '';
+        /* --- ЗАГРУЗКА --- */
+        #preloader { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3000; display: flex; flex-direction: column; align-items: center; pointer-events: none; transition: opacity 0.8s ease; }
+        body.open #preloader { opacity: 0; }
+        .loader-ring { width: 80px; height: 80px; border: 3px solid rgba(189, 0, 255, 0.1); border-top: 3px solid var(--primary); border-right: 3px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; box-shadow: 0 0 40px rgba(189, 0, 255, 0.5); margin-bottom: 20px; backdrop-filter: blur(4px); }
+        .loader-text { font-weight: 800; letter-spacing: 3px; text-transform: uppercase; font-size: 0.8rem; text-shadow: 0 0 15px var(--primary); }
 
-    const playersRef = ref(db, 'players');
-    onValue(playersRef, (snapshot) => {
-        const dataObj = snapshot.val();
+        /* --- СЦЕНА (ОСНОВНОЙ КОНТЕЙНЕР) --- */
+        .stage-container { 
+            position: relative; z-index: 10; 
+            display: flex; flex-direction: column; align-items: center; 
+            padding-top: 100px; /* Отступ сверху */
+            opacity: 0; transition: opacity 1.5s ease 1s; 
+            padding-right: 150px; /* Отступ справа для ПК */
+            width: 100%;
+            box-sizing: border-box;
+        }
+        body.open .stage-container { opacity: 1; }
+
+        h1 {
+            font-size: 4rem; text-transform: uppercase; font-weight: 900; letter-spacing: 4px; margin-bottom: 30px;
+            background: linear-gradient(180deg, #fff 30%, #bd00ff 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(189, 0, 255, 0.5); text-align: center;
+        }
+
+        /* --- ИНФО-ПАНЕЛЬ (САЙДБАР) --- */
+        .info-sidebar {
+            position: fixed; left: 70px; top: 150px; width: 220px;
+            background: rgba(20, 10, 30, 0.6);
+            backdrop-filter: blur(15px); border: 1px solid rgba(189, 0, 255, 0.2);
+            border-radius: 15px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transform: translateX(-200%); transition: transform 1s ease 2s; z-index: 100;
+        }
+        body.open .info-sidebar { transform: translateX(0); }
         
-        if (!dataObj) {
-            render([]);
-            return;
+        .info-title { color: var(--accent); font-weight: bold; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; text-shadow: 0 0 10px var(--primary);}
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; color: #ddd; }
+        .info-row b { color: #fff; }
+        .info-row.highlight { color: var(--accent); text-shadow: 0 0 15px var(--primary); font-weight: bold; }
+
+        /* --- СЕТКА --- */
+        .grid { 
+            display: flex; flex-wrap: wrap; justify-content: center; 
+            gap: 25px; width: 85%; max-width: 1100px; 
+            margin-left: 100px; /* Отступ слева для ПК */
         }
 
-        const data = Object.values(dataObj);
-        const currentDataState = JSON.stringify(data);
-        if (currentDataState === lastDataState) return;
-        lastDataState = currentDataState;
-
-        render(data);
-    });
-
-    function render(data) {
-        const grid = document.getElementById('grid');
-
-        if (data.length === 0) {
-            grid.innerHTML = '<div style="color: #88aaff; font-size:1.2rem; margin-top:50px;">Ожидание участников...</div>';
-            return;
+        .card {
+            width: 240px; background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(189, 0, 255, 0.1); border-radius: 20px; padding: 25px 20px;
+            display: flex; flex-direction: column; align-items: center; position: relative;
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+            transform: translateZ(0); backface-visibility: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
+        .card:hover { transform: translateY(-8px) scale(1.02); border-color: var(--primary); box-shadow: 0 10px 40px rgba(189, 0, 255, 0.3); background: rgba(30, 10, 40, 0.8); z-index: 100; }
 
-        data.sort((a, b) => {
-            if (b.rounds !== a.rounds) return b.rounds - a.rounds;
-            return a.id - b.id;
-        });
+        .queue-badge { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 2px 8px; font-size: 0.8rem; color: #ccc; z-index: 10; }
+        .card.leader .queue-badge { background: linear-gradient(45deg, #bd00ff, #d966ff); color: white; border: none; font-weight: bold; }
 
-        let html = '';
+        .avatar-container { width: 80px; height: 80px; margin-bottom: 12px; position: relative; border-radius: 50%; background: linear-gradient(135deg, #6a00ff, #bd00ff); border: 3px solid rgba(255,255,255,0.2); box-shadow: 0 5px 15px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .avatar-img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-fallback { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; color: white; position: absolute; top: 0; left: 0; background: linear-gradient(135deg, #6a00ff, #bd00ff); }
+        .nickname { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .score-pill { background: rgba(0, 0, 0, 0.6); padding: 5px 15px; border-radius: 30px; font-size: 0.9rem; color: #ddd; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+        .dot { width: 6px; height: 6px; background-color: #bd00ff; border-radius: 50%; box-shadow: 0 0 6px #bd00ff; }
+        .reward { font-size: 1rem; color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; text-shadow: 0 0 15px rgba(189, 0, 255, 0.4); display: flex; align-items: center; gap: 6px; }
         
-        data.forEach((p, index) => {
-            const isLeader = p.rounds > 0;
-            const isWinner = p.rounds >= 4;
-            
-            // Золото для победителя, иначе Фиолетовый
-            let glowColor = isWinner ? '#ffd700' : 'var(--primary)';
-            
-            const activeGlow = isLeader ? `border-color: ${glowColor}; box-shadow: 0 0 25px ${glowColor};` : '';
-            const dotColor = isLeader ? '#00ffea' : '#555'; 
-            const queueClass = isLeader ? 'leader' : '';
-            const badgeText = isLeader ? `TOP #${index + 1}` : `Queue #${index + 1}`;
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-            let avatarHtml = '';
-            if (p.avatar && p.avatar.trim() !== '') {
-                avatarHtml = `<img src="${p.avatar}" class="avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"><div class="avatar-fallback" style="display:none">${p.name.charAt(0)}</div>`;
-            } else {
-                avatarHtml = `<div class="avatar-fallback">${p.name.charAt(0)}</div>`;
+        /* ========================================= */
+        /*          АДАПТАЦИЯ ПОД МОБИЛЬНЫЕ          */
+        /* ========================================= */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; margin-top: 10px; }
+            
+            /* Инфо-панель переезжает наверх */
+            .info-sidebar {
+                position: relative;
+                top: auto; left: auto;
+                width: 90%; max-width: 350px;
+                transform: none; /* Отключаем анимацию выезда сбоку */
+                margin: 0 auto 20px auto;
+                background: rgba(20, 10, 30, 0.8);
+            }
+            body.open .info-sidebar { transform: none; }
+
+            /* Убираем отступы сцены */
+            .stage-container {
+                padding-right: 0;
+                padding-top: 90px;
+                width: 100%;
             }
 
-            html += `
-            <div class="card ${queueClass}" style="${activeGlow}">
-                <div class="queue-badge">${badgeText}</div>
-                <div class="avatar-container">${avatarHtml}</div>
-                <div class="nickname">${p.name}</div>
-                <div class="score-pill">
-                    <span class="dot" style="background:${dotColor}; box-shadow:0 0 6px ${dotColor}"></span>
-                    Раунды: <b style="color:white; margin-left:4px;">${p.rounds}</b>
-                </div>
-                <div class="reward">${getReward(p.rounds)}</div>
-            </div>
-            `;
+            /* Сетка по центру */
+            .grid {
+                margin-left: 0;
+                width: 100%;
+                padding: 0 10px;
+                gap: 15px;
+            }
+
+            /* Карточки чуть меньше */
+            .card {
+                width: 45%; /* Две карточки в ряд */
+                min-width: 140px;
+                padding: 15px 10px;
+            }
+            .avatar-container { width: 60px; height: 60px; }
+            .nickname { font-size: 1.1rem; }
+            .reward { font-size: 0.8rem; }
+
+            /* Маскот полупрозрачный и маленький */
+            .mascot-img {
+                height: 150px;
+                opacity: 0.3; /* Чтобы текст читался сквозь него */
+                right: -30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- ГИРЛЯНДА -->
+    <ul class="light-rope">
+        <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
+    </ul>
+
+    <div class="curtain-top"></div>
+    <div class="curtain left"></div>
+    <div class="curtain right"></div>
+    <div id="preloader"><div class="loader-ring"></div><div class="loader-text">Loading...</div></div>
+
+    <!-- КОНТЕЙНЕР СЦЕНЫ -->
+    <div class="stage-container">
+        <h1>LoliComedy</h1>
+
+        <!-- ИНФО-ПАНЕЛЬ (Для мобилок она встанет сюда по потоку, для ПК улетит влево) -->
+        <div class="info-sidebar">
+            <div class="info-title">💰 Призовой фонд</div>
+            <div class="info-row"><span>1 Раунд:</span> <b>10.000</b></div>
+            <div class="info-row"><span>2 Раунда:</span> <b>50.000</b></div>
+            <div class="info-row"><span>3 Раунда:</span> <b>100.000</b></div>
+            <div class="info-row highlight"><span>4 Раунда:</span> <b>500.000</b></div>
+        </div>
+
+        <div class="grid" id="grid">Загрузка данных...</div>
+    </div>
+
+    <!-- МАСКОТ -->
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrhAkPq6l8h_GTZ0NAgs1UOypgqXptArLplg&s" class="mascot-img" alt="Mascot" onerror="this.style.display='none'">
+
+    <!-- СНЕГ -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const snowCount = 30; // Чуть меньше снега для производительности телефона
+            const body = document.body;
+            for(let i=0; i<snowCount; i++) {
+                const snow = document.createElement('div');
+                snow.className = 'snowflake';
+                snow.innerHTML = '❄';
+                snow.style.left = Math.random() * 100 + 'vw';
+                snow.style.animationDuration = (Math.random() * 5 + 3) + 's';
+                snow.style.opacity = Math.random();
+                snow.style.fontSize = (Math.random() * 10 + 10) + 'px';
+                snow.style.animationDelay = Math.random() * 5 + 's';
+                body.appendChild(snow);
+            }
+        });
+    </script>
+
+    <!-- FIREBASE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhMA1jiefu1qCNyXwthGJC021t6VFjhDw",
+            authDomain: "loli-event.firebaseapp.com",
+            databaseURL: "https://loli-event-default-rtdb.firebaseio.com",
+            projectId: "loli-event",
+            storageBucket: "loli-event.firebasestorage.app",
+            messagingSenderId: "752512367668",
+            appId: "1:752512367668:web:3e595160cd3db5b79f5e61"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Старт анимации
+        window.onload = () => {
+            setTimeout(() => {
+                document.body.classList.add('open');
+                setTimeout(() => { document.getElementById('preloader').style.display = 'none'; }, 1000);
+            }, 2000);
+        };
+
+        function getReward(rounds) {
+            if (rounds === 0) return "Ожидание";
+            if (rounds === 1) return "💰 10.000 МОНЕТ";
+            if (rounds === 2) return "💰 50.000 МОНЕТ";
+            if (rounds === 3) return "💰 100.000 МОНЕТ";
+            if (rounds >= 4) return "💰 500.000 МОНЕТ";
+            return "---";
+        }
+
+        let lastDataState = '';
+
+        const playersRef = ref(db, 'players');
+        onValue(playersRef, (snapshot) => {
+            const dataObj = snapshot.val();
+            
+            if (!dataObj) {
+                render([]);
+                return;
+            }
+
+            const data = Object.values(dataObj);
+            const currentDataState = JSON.stringify(data);
+            if (currentDataState === lastDataState) return;
+            lastDataState = currentDataState;
+
+            render(data);
         });
 
-        grid.innerHTML = html;
-    }
-</script>
+        function render(data) {
+            const grid = document.getElementById('grid');
+
+            if (data.length === 0) {
+                grid.innerHTML = '<div style="color: #88aaff; font-size:1.2rem; margin-top:50px;">Ожидание участников...</div>';
+                return;
+            }
+
+            data.sort((a, b) => {
+                if (b.rounds !== a.rounds) return b.rounds - a.rounds;
+                return a.id - b.id;
+            });
+
+            let html = '';
+            
+            data.forEach((p, index) => {
+                const isLeader = p.rounds > 0;
+                const isWinner = p.rounds >= 4;
+                let glowColor = isWinner ? '#ffd700' : 'var(--primary)';
+                const activeGlow = isLeader ? `border-color: ${glowColor}; box-shadow: 0 0 25px ${glowColor};` : '';
+                const dotColor = isLeader ? '#00ffea' : '#555'; 
+                const queueClass = isLeader ? 'leader' : '';
+                const badgeText = isLeader ? `TOP #${index + 1}` : `Queue #${index + 1}`;
+
+                let avatarHtml = '';
+                if (p.avatar && p.avatar.trim() !== '') {
+                    avatarHtml = `<img src="${p.avatar}" class="avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"><div class="avatar-fallback" style="display:none">${p.name.charAt(0)}</div>`;
+                } else {
+                    avatarHtml = `<div class="avatar-fallback">${p.name.charAt(0)}</div>`;
+                }
+
+                html += `
+                <div class="card ${queueClass}" style="${activeGlow}">
+                    <div class="queue-badge">${badgeText}</div>
+                    <div class="avatar-container">${avatarHtml}</div>
+                    <div class="nickname">${p.name}</div>
+                    <div class="score-pill">
+                        <span class="dot" style="background:${dotColor}; box-shadow:0 0 6px ${dotColor}"></span>
+                        Раунды: <b style="color:white; margin-left:4px;">${p.rounds}</b>
+                    </div>
+                    <div class="reward">${getReward(p.rounds)}</div>
+                </div>
+                `;
+            });
+
+            grid.innerHTML = html;
+        }
+    </script>
 </body>
 </html>
