@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>LoliComedy Event</title>
+    <title>123Comedy Event</title>
     <style>
         :root {
             --primary: #bd00ff;
@@ -26,7 +26,7 @@
             min-height: 100vh;
         }
 
-        /* --- ГИРЛЯНДА (PREMIUM STYLE) --- */
+        /* --- ГИРЛЯНДА (PREMIUM STYLE + SNOWFLAKES) --- */
         .light-rope {
             text-align: center;
             white-space: nowrap;
@@ -59,9 +59,16 @@
             animation-duration: 2s;
         }
 
-        /* Провод (Тонкая дуга) */
+        /* Провод (Тонкая дуга) + ДЕКОР СНЕЖИНОК */
         .light-rope li:before {
-            content: "";
+            content: "❄"; /* Добавлена снежинка */
+            color: rgba(255, 255, 255, 0.15); /* Очень легкая прозрачность */
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end; /* Прижимаем к низу дуги */
+            line-height: 35px; /* Регулировка высоты символа */
+            
             position: absolute;
             background: transparent;
             width: 50px;
@@ -72,6 +79,14 @@
             left: -25px;
         }
 
+        /* Чередование декора на проводах (Снежинка / Звездочка) */
+        .light-rope li:nth-child(2n):before {
+            content: "✦"; 
+            font-size: 10px;
+            line-height: 30px;
+            color: rgba(255, 255, 255, 0.1);
+        }
+        
         /* Цоколь (Крепление) */
         .light-rope li:after {
             content: "";
@@ -114,9 +129,9 @@
         /* --- МАСКОТ (Уменьшенный) --- */
         .mascot-img {
             position: fixed;
-            bottom: -5px; /* Чуть утоплен вниз */
-            right: -10px; /* Чуть утоплен вправо */
-            height: 250px; /* Фиксированная небольшая высота */
+            bottom: -5px; 
+            right: -10px; 
+            height: 250px; 
             z-index: 10;
             pointer-events: none;
             filter: drop-shadow(0 0 15px rgba(189, 0, 255, 0.4));
@@ -125,7 +140,7 @@
         }
         body.open .mascot-img { transform: translateX(0); }
 
-        /* --- СНЕГ --- */
+        /* --- СНЕГ (Падающий) --- */
         .snowflake {
             position: fixed; top: -10px; color: white; font-size: 1em; text-shadow: 0 0 5px #000; z-index: 1; 
             user-select: none; cursor: default; animation-name: snowfall; animation-timing-function: linear; 
@@ -224,7 +239,7 @@
 </head>
 <body>
     
-    <!-- ГИРЛЯНДА (Красивая) -->
+    <!-- ГИРЛЯНДА (С новыми снежинками в CSS) -->
     <ul class="light-rope">
         <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
     </ul>
@@ -243,12 +258,12 @@
         <div class="info-row highlight"><span>4 Раунда:</span> <b>500.000</b></div>
     </div>
 
-    <!-- МАСКОТ (Вставь сюда свою ссылку на мопса или девочку) -->
+    <!-- МАСКОТ -->
     <img src="https://sobakovod.club/uploads/posts/2022-01/1642164746_1-sobakovod-club-p-sobaki-tolstii-mops-1.jpg" class="mascot-img" alt="Mascot" onerror="this.style.display='none'">
 
     <!-- СЦЕНА -->
     <div class="stage-container">
-        <h1>LoliComedy</h1>
+        <h1>123Comedy</h1>
         <div class="grid" id="grid">Загрузка данных...</div>
     </div>
 
@@ -278,10 +293,10 @@
 
         const firebaseConfig = {
             apiKey: "AIzaSyDhMA1jiefu1qCNyXwthGJC021t6VFjhDw",
-            authDomain: "loli-event.firebaseapp.com",
-            databaseURL: "https://loli-event-default-rtdb.firebaseio.com",
-            projectId: "loli-event",
-            storageBucket: "loli-event.firebasestorage.app",
+            authDomain: "123-event.firebaseapp.com",
+            databaseURL: "https://123-event-default-rtdb.firebaseio.com",
+            projectId: "123-event",
+            storageBucket: "123-event.firebasestorage.app",
             messagingSenderId: "752512367668",
             appId: "1:752512367668:web:3e595160cd3db5b79f5e61"
         };
