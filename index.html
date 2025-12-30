@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Важно для мобилок -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LoliComedy Event</title>
     <style>
         :root {
@@ -25,7 +25,7 @@
             min-height: 100vh;
         }
 
-        /* --- ГИРЛЯНДА --- */
+        /* --- ГИРЛЯНДА СО СНЕЖИНКАМИ --- */
         .light-rope {
             text-align: center; white-space: nowrap; overflow: hidden;
             position: fixed; z-index: 3000; margin: -15px 0 0 0; padding: 0;
@@ -37,30 +37,39 @@
             width: 12px; height: 22px; border-radius: 50%; margin: 20px;
             background: #fff; opacity: 0.5; animation-name: flash; animation-duration: 2s;
         }
+        /* Провод */
         .light-rope li:before {
             content: ""; position: absolute; background: transparent; width: 50px; height: 10px;
             border-bottom: solid #333 1px; border-radius: 50%; top: -10px; left: -25px;
         }
+        /* Цоколь лампочки */
         .light-rope li:after {
             content: ""; position: absolute; top: -3px; left: 0px; width: 12px; height: 6px;
             background: #222; border-radius: 2px;
         }
+        
         .light-rope li:nth-child(odd) { background: #00ffea; box-shadow: 0px 2px 20px 2px #00ffea; animation-duration: 1.8s; }
         .light-rope li:nth-child(2n+1) { background: #bd00ff; box-shadow: 0px 2px 20px 2px #bd00ff; animation-duration: 2.5s; }
         .light-rope li:nth-child(3n+1) { background: #ff0055; box-shadow: 0px 2px 20px 2px #ff0055; animation-duration: 1.2s; }
         .light-rope li:nth-child(4n+1) { background: #ffeb3b; box-shadow: 0px 2px 20px 2px #ffeb3b; animation-duration: 2.2s; }
-        @keyframes flash { 0%, 100% { opacity: 1; transform: scale(1.1); } 50% { opacity: 0.4; transform: scale(0.9); } }
 
-        /* --- МАСКОТ --- */
-        .mascot-img {
-            position: fixed; bottom: -5px; right: -10px; height: 250px; max-height: 40vh;
-            z-index: 10; pointer-events: none;
-            filter: drop-shadow(0 0 15px rgba(189, 0, 255, 0.4));
-            transform: translateX(100%); transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.5s;
+        /* --- СТИЛИ ДЛЯ СНЕЖИНОК В ГИРЛЯНДЕ --- */
+        .light-rope li.flake {
+            background: transparent; box-shadow: none;
+            width: 20px; height: 20px;
+            font-size: 24px; color: white;
+            top: 5px; /* Чуть ниже провода */
+            display: flex; justify-content: center; align-items: center;
+            text-shadow: 0 0 10px #fff, 0 0 20px #00ffea;
+            animation: swing 3s ease-in-out infinite alternate;
         }
-        body.open .mascot-img { transform: translateX(0); }
+        .light-rope li.flake:after { display: none; } /* Убираем цоколь у снежинки */
+        /* Оставляем провод (:before) для снежинок, чтобы цепь не рвалась */
 
-        /* --- СНЕГ --- */
+        @keyframes flash { 0%, 100% { opacity: 1; transform: scale(1.1); } 50% { opacity: 0.4; transform: scale(0.9); } }
+        @keyframes swing { 0% { transform: rotate(-10deg); } 100% { transform: rotate(10deg); } }
+
+        /* --- СНЕГ (ФОНОВЫЙ) --- */
         .snowflake {
             position: fixed; top: -10px; color: white; font-size: 1em; text-shadow: 0 0 5px #000; z-index: 1; 
             user-select: none; cursor: default; animation-name: snowfall; animation-timing-function: linear; 
@@ -73,9 +82,8 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 80px; z-index: 2001;
             background: linear-gradient(180deg, var(--c-shadow) 0%, var(--c-base) 60%, var(--c-shadow) 100%);
             mask-image: radial-gradient(circle at 50% 120%, transparent 40%, black 41%);
-            mask-size: 40px 100%; mask-position: bottom;
             -webkit-mask-image: radial-gradient(circle at 50% 120%, transparent 40%, black 41%);
-            -webkit-mask-size: 40px 100%; -webkit-mask-position: bottom;
+            mask-size: 40px 100%; -webkit-mask-size: 40px 100%;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8); pointer-events: none;
         }
         .curtain {
@@ -86,7 +94,7 @@
         }
         .curtain.left { left: 0; transform-origin: left; border-right: 2px solid rgba(0,0,0,0.5); }
         .curtain.right { right: 0; transform-origin: right; border-left: 2px solid rgba(0,0,0,0.5); background-position: -100px 0; }
-        body.open .curtain.left { transform: translateX(-100%); } /* На телефоне открываем полностью */
+        body.open .curtain.left { transform: translateX(-100%); }
         body.open .curtain.right { transform: translateX(100%); }
 
         /* --- ЗАГРУЗКА --- */
@@ -95,15 +103,12 @@
         .loader-ring { width: 80px; height: 80px; border: 3px solid rgba(189, 0, 255, 0.1); border-top: 3px solid var(--primary); border-right: 3px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; box-shadow: 0 0 40px rgba(189, 0, 255, 0.5); margin-bottom: 20px; backdrop-filter: blur(4px); }
         .loader-text { font-weight: 800; letter-spacing: 3px; text-transform: uppercase; font-size: 0.8rem; text-shadow: 0 0 15px var(--primary); }
 
-        /* --- СЦЕНА (ОСНОВНОЙ КОНТЕЙНЕР) --- */
+        /* --- СЦЕНА --- */
         .stage-container { 
             position: relative; z-index: 10; 
             display: flex; flex-direction: column; align-items: center; 
-            padding-top: 100px; /* Отступ сверху */
+            padding-top: 100px; padding-right: 150px; width: 100%; box-sizing: border-box;
             opacity: 0; transition: opacity 1.5s ease 1s; 
-            padding-right: 150px; /* Отступ справа для ПК */
-            width: 100%;
-            box-sizing: border-box;
         }
         body.open .stage-container { opacity: 1; }
 
@@ -114,13 +119,12 @@
             text-shadow: 0 0 30px rgba(189, 0, 255, 0.5); text-align: center;
         }
 
-        /* --- ИНФО-ПАНЕЛЬ (САЙДБАР) --- */
         .info-sidebar {
             position: fixed; left: 70px; top: 150px; width: 220px;
-            background: rgba(20, 10, 30, 0.6);
-            backdrop-filter: blur(15px); border: 1px solid rgba(189, 0, 255, 0.2);
-            border-radius: 15px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transform: translateX(-200%); transition: transform 1s ease 2s; z-index: 100;
+            background: rgba(20, 10, 30, 0.6); backdrop-filter: blur(15px); 
+            border: 1px solid rgba(189, 0, 255, 0.2); border-radius: 15px; padding: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); transform: translateX(-200%); 
+            transition: transform 1s ease 2s; z-index: 100;
         }
         body.open .info-sidebar { transform: translateX(0); }
         
@@ -129,23 +133,17 @@
         .info-row b { color: #fff; }
         .info-row.highlight { color: var(--accent); text-shadow: 0 0 15px var(--primary); font-weight: bold; }
 
-        /* --- СЕТКА --- */
-        .grid { 
-            display: flex; flex-wrap: wrap; justify-content: center; 
-            gap: 25px; width: 85%; max-width: 1100px; 
-            margin-left: 100px; /* Отступ слева для ПК */
-        }
+        .grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; width: 85%; max-width: 1100px; margin-left: 100px; }
 
         .card {
-            width: 240px; background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            width: 240px; background: var(--card-bg); backdrop-filter: blur(20px);
             border: 1px solid rgba(189, 0, 255, 0.1); border-radius: 20px; padding: 25px 20px;
             display: flex; flex-direction: column; align-items: center; position: relative;
-            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
-            transform: translateZ(0); backface-visibility: hidden;
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
         .card:hover { transform: translateY(-8px) scale(1.02); border-color: var(--primary); box-shadow: 0 10px 40px rgba(189, 0, 255, 0.3); background: rgba(30, 10, 40, 0.8); z-index: 100; }
-
+        
         .queue-badge { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 2px 8px; font-size: 0.8rem; color: #ccc; z-index: 10; }
         .card.leader .queue-badge { background: linear-gradient(45deg, #bd00ff, #d966ff); color: white; border: none; font-weight: bold; }
 
@@ -159,62 +157,79 @@
         
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* ========================================= */
-        /*          АДАПТАЦИЯ ПОД МОБИЛЬНЫЕ          */
-        /* ========================================= */
+        /* --- СКРЫТЫЙ МОПС (ПАСХАЛКА) --- */
+        .secret-pug {
+            position: fixed;
+            bottom: -50px; /* Скрываем большую часть */
+            left: 20px;
+            width: 80px; height: 80px;
+            z-index: 2500; /* Поверх штор */
+            cursor: pointer;
+            transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+        }
+        .secret-pug:hover { bottom: -10px; /* Выглядывает при наведении */ }
+        .secret-pug img { width: 100%; height: auto; border-radius: 50%; transform: rotate(10deg); }
+
+        /* --- МОДАЛЬНОЕ ОКНО С МОПСОМ --- */
+        .pug-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.4s ease;
+            backdrop-filter: blur(5px);
+        }
+        .pug-modal.active { opacity: 1; pointer-events: all; }
+        
+        .pug-full-img {
+            max-width: 90vw; max-height: 80vh;
+            border-radius: 15px;
+            box-shadow: 0 0 50px rgba(189, 0, 255, 0.5);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn { 0% { transform: scale(0.5); } 100% { transform: scale(1); } }
+
+        .close-btn {
+            position: absolute; top: 30px; right: 30px;
+            color: #fff; font-size: 3rem; cursor: pointer;
+            text-shadow: 0 0 10px #000;
+            transition: transform 0.2s;
+        }
+        .close-btn:hover { transform: scale(1.2) rotate(90deg); color: var(--accent); }
+
+        /* АДАПТАЦИЯ */
         @media (max-width: 768px) {
             h1 { font-size: 2.5rem; margin-top: 10px; }
-            
-            /* Инфо-панель переезжает наверх */
-            .info-sidebar {
-                position: relative;
-                top: auto; left: auto;
-                width: 90%; max-width: 350px;
-                transform: none; /* Отключаем анимацию выезда сбоку */
-                margin: 0 auto 20px auto;
-                background: rgba(20, 10, 30, 0.8);
-            }
+            .info-sidebar { position: relative; top: auto; left: auto; width: 90%; max-width: 350px; transform: none; margin: 0 auto 20px auto; background: rgba(20, 10, 30, 0.8); }
             body.open .info-sidebar { transform: none; }
-
-            /* Убираем отступы сцены */
-            .stage-container {
-                padding-right: 0;
-                padding-top: 90px;
-                width: 100%;
-            }
-
-            /* Сетка по центру */
-            .grid {
-                margin-left: 0;
-                width: 100%;
-                padding: 0 10px;
-                gap: 15px;
-            }
-
-            /* Карточки чуть меньше */
-            .card {
-                width: 45%; /* Две карточки в ряд */
-                min-width: 140px;
-                padding: 15px 10px;
-            }
+            .stage-container { padding-right: 0; padding-top: 90px; width: 100%; }
+            .grid { margin-left: 0; width: 100%; padding: 0 10px; gap: 15px; }
+            .card { width: 45%; min-width: 140px; padding: 15px 10px; }
             .avatar-container { width: 60px; height: 60px; }
-            .nickname { font-size: 1.1rem; }
-            .reward { font-size: 0.8rem; }
-
-            /* Маскот полупрозрачный и маленький */
-            .mascot-img {
-                height: 150px;
-                opacity: 0.3; /* Чтобы текст читался сквозь него */
-                right: -30px;
-            }
+            .secret-pug { left: 10px; bottom: -40px; width: 60px; height: 60px; } /* Чуть меньше на телефоне */
         }
     </style>
 </head>
 <body>
     
-    <!-- ГИРЛЯНДА -->
+    <!-- ГИРЛЯНДА СО СНЕЖИНКАМИ -->
+    <!-- Чередуем лампочки и класс flake (снежинки) -->
     <ul class="light-rope">
-        <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
+        <li></li><li class="flake">❄</li>
+        <li></li><li class="flake">❄</li>
+        <li></li><li class="flake">❄</li>
+        <li></li><li class="flake">❄</li>
+        <li></li><li class="flake">❄</li>
+        <li></li><li class="flake">❄</li>
+        <li></li><li class="flake">❄</li>
+        <li></li><li class="flake">❄</li>
+        <li></li><li class="flake">❄</li>
+        <li></li><li class="flake">❄</li>
+        <li></li><li class="flake">❄</li>
+        <li></li><li class="flake">❄</li>
+        <li></li>
     </ul>
 
     <div class="curtain-top"></div>
@@ -222,11 +237,10 @@
     <div class="curtain right"></div>
     <div id="preloader"><div class="loader-ring"></div><div class="loader-text">Loading...</div></div>
 
-    <!-- КОНТЕЙНЕР СЦЕНЫ -->
+    <!-- СЦЕНА -->
     <div class="stage-container">
         <h1>LoliComedy</h1>
 
-        <!-- ИНФО-ПАНЕЛЬ (Для мобилок она встанет сюда по потоку, для ПК улетит влево) -->
         <div class="info-sidebar">
             <div class="info-title">💰 Призовой фонд</div>
             <div class="info-row"><span>1 Раунд:</span> <b>10.000</b></div>
@@ -238,13 +252,22 @@
         <div class="grid" id="grid">Загрузка данных...</div>
     </div>
 
-    <!-- МАСКОТ -->
-    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrhAkPq6l8h_GTZ0NAgs1UOypgqXptArLplg&s" class="mascot-img" alt="Mascot" onerror="this.style.display='none'">
+    <!-- ПАСХАЛКА: СКРЫТЫЙ МОПС -->
+    <div class="secret-pug" onclick="openPug()">
+        <!-- Используем часть картинки (например, обрежем в css, но здесь просто картинка) -->
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrhAkPq6l8h_GTZ0NAgs1UOypgqXptArLplg&s" alt="Pug Peek">
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО С МОПСОМ -->
+    <div class="pug-modal" id="pugModal">
+        <div class="close-btn" onclick="closePug()">&times;</div>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrhAkPq6l8h_GTZ0NAgs1UOypgqXptArLplg&s" class="pug-full-img" alt="Full Pug">
+    </div>
 
     <!-- СНЕГ -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const snowCount = 30; // Чуть меньше снега для производительности телефона
+            const snowCount = 30; 
             const body = document.body;
             for(let i=0; i<snowCount; i++) {
                 const snow = document.createElement('div');
@@ -258,6 +281,14 @@
                 body.appendChild(snow);
             }
         });
+
+        // ЛОГИКА МОПСА
+        function openPug() {
+            document.getElementById('pugModal').classList.add('active');
+        }
+        function closePug() {
+            document.getElementById('pugModal').classList.remove('active');
+        }
     </script>
 
     <!-- FIREBASE -->
@@ -267,18 +298,17 @@
 
         const firebaseConfig = {
             apiKey: "AIzaSyDhMA1jiefu1qCNyXwthGJC021t6VFjhDw",
-            authDomain: "loli-event.firebaseapp.com",
-            databaseURL: "https://loli-event-default-rtdb.firebaseio.com",
-            projectId: "loli-event",
-            storageBucket: "loli-event.firebasestorage.app",
-            messagingSenderId: "752512367668",
-            appId: "1:752512367668:web:3e595160cd3db5b79f5e61"
+            authDomain: "Loli-event.firebaseapp.com",
+            databaseURL: "https://Loli-event-default-rtdb.firebaseio.com",
+            projectId: "Loli-event",
+            storageBucket: "Loli-event.firebasestorage.app",
+            messagingSenderId: "7525Loli67668",
+            appId: "1:7525Loli67668:web:3e595160cd3db5b79f5e61"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Старт анимации
         window.onload = () => {
             setTimeout(() => {
                 document.body.classList.add('open');
